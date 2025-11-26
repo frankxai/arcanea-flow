@@ -377,8 +377,7 @@ jobs:
       code-quality,
       test-verification,
       build-verification,
-      docs-verification,
-      performance-verification
+      docs-verification
     ]
     if: always()
     steps:
