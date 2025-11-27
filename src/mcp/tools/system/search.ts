@@ -15,10 +15,12 @@ import type { DynamicToolLoader, ToolMetadata } from '../loader.js';
 
 interface SearchToolsInput {
   query?: string;
+  pattern?: string;  // Regex pattern for tool names
   category?: string;
   tags?: string[];
   detailLevel?: 'names-only' | 'basic' | 'full';
   limit?: number;
+  sortBy?: 'relevance' | 'name' | 'category';
 }
 
 interface ToolSearchResult {
@@ -28,6 +30,7 @@ interface ToolSearchResult {
   tags?: string[];
   inputSchema?: any;
   examples?: any[];
+  relevanceScore?: number;  // 0-100 relevance score
 }
 
 interface SearchToolsResult {
@@ -64,6 +67,10 @@ export function createSearchToolsTool(
           type: 'string',
           description: 'Search query (searches tool names and descriptions)',
         },
+        pattern: {
+          type: 'string',
+          description: 'Regex pattern to match tool names (e.g., "memory/.*", "^agents/", "task|workflow")',
+        },
         category: {
           type: 'string',
           description: 'Filter by category',
@@ -98,6 +105,12 @@ export function createSearchToolsTool(
           minimum: 1,
           maximum: 100,
           default: 20,
+        },
+        sortBy: {
+          type: 'string',
+          enum: ['relevance', 'name', 'category'],
+          description: 'Sort results by relevance score, name, or category',
+          default: 'relevance',
         },
       },
       required: [],
@@ -174,35 +187,113 @@ export function createSearchToolsTool(
       const validatedInput = input as SearchToolsInput;
       const detailLevel = validatedInput.detailLevel || 'basic';
       const limit = validatedInput.limit || 20;
+      const sortBy = validatedInput.sortBy || 'relevance';
 
       logger.info('tools/search invoked', {
         query: validatedInput.query,
+        pattern: validatedInput.pattern,
         category: validatedInput.category,
         detailLevel,
         limit,
+        sortBy,
       });
 
       try {
         // Search tool metadata (lightweight operation)
-        const metadata = loader.searchTools({
+        let metadata = loader.searchTools({
           category: validatedInput.category,
           tags: validatedInput.tags,
           namePattern: validatedInput.query,
         });
 
+        // Apply regex pattern filter if provided
+        if (validatedInput.pattern) {
+          try {
+            const regex = new RegExp(validatedInput.pattern, 'i');
+            metadata = metadata.filter(m => regex.test(m.name));
+            logger.debug('Regex pattern applied', {
+              pattern: validatedInput.pattern,
+              matchCount: metadata.length,
+            });
+          } catch (regexError) {
+            logger.warn('Invalid regex pattern, falling back to substring match', {
+              pattern: validatedInput.pattern,
+              error: regexError instanceof Error ? regexError.message : 'Unknown',
+            });
+            // Fallback to substring match
+            const pattern = validatedInput.pattern.toLowerCase();
+            metadata = metadata.filter(m => m.name.toLowerCase().includes(pattern));
+          }
+        }
+
+        // Calculate relevance scores
+        const scoredMetadata = metadata.map(meta => {
+          let score = 0;
+          const query = (validatedInput.query || '').toLowerCase();
+          const pattern = (validatedInput.pattern || '').toLowerCase();
+
+          // Exact name match: highest score
+          if (meta.name.toLowerCase() === query || meta.name.toLowerCase() === pattern) {
+            score += 100;
+          }
+          // Name starts with query: high score
+          else if (meta.name.toLowerCase().startsWith(query) && query) {
+            score += 80;
+          }
+          // Name contains query: medium-high score
+          else if (query && meta.name.toLowerCase().includes(query)) {
+            score += 60;
+          }
+          // Description contains query: medium score
+          else if (query && meta.description.toLowerCase().includes(query)) {
+            score += 40;
+          }
+
+          // Category match bonus
+          if (validatedInput.category && meta.category === validatedInput.category) {
+            score += 20;
+          }
+
+          // Tag match bonus
+          if (validatedInput.tags && meta.tags) {
+            const matchingTags = validatedInput.tags.filter(t =>
+              meta.tags!.some(mt => mt.toLowerCase() === t.toLowerCase())
+            );
+            score += matchingTags.length * 10;
+          }
+
+          // Boost frequently used tools (core tools)
+          const coreTools = ['agents/spawn', 'agents/list', 'system/status', 'tools/search'];
+          if (coreTools.includes(meta.name)) {
+            score += 15;
+          }
+
+          return { meta, score };
+        });
+
+        // Sort by selected criteria
+        if (sortBy === 'relevance') {
+          scoredMetadata.sort((a, b) => b.score - a.score);
+        } else if (sortBy === 'name') {
+          scoredMetadata.sort((a, b) => a.meta.name.localeCompare(b.meta.name));
+        } else if (sortBy === 'category') {
+          scoredMetadata.sort((a, b) => a.meta.category.localeCompare(b.meta.category));
+        }
+
         logger.debug('Tool search results', {
-          totalMatches: metadata.length,
+          totalMatches: scoredMetadata.length,
           detailLevel,
+          sortBy,
         });
 
         // Process results based on detail level
         const results: ToolSearchResult[] = [];
-        const limitedMetadata = metadata.slice(0, limit);
+        const limitedMetadata = scoredMetadata.slice(0, limit);
 
-        for (const meta of limitedMetadata) {
+        for (const { meta, score } of limitedMetadata) {
           if (detailLevel === 'names-only') {
             // Minimal: Just name (saves most tokens)
-            results.push({ name: meta.name });
+            results.push({ name: meta.name, relevanceScore: score });
           } else if (detailLevel === 'basic') {
             // Basic: Name + description + category + tags
             results.push({
@@ -210,6 +301,7 @@ export function createSearchToolsTool(
               description: meta.description,
               category: meta.category,
               tags: meta.tags,
+              relevanceScore: score,
             });
           } else if (detailLevel === 'full') {
             // Full: Load complete tool definition including schema
@@ -222,6 +314,7 @@ export function createSearchToolsTool(
                 tags: meta.tags,
                 inputSchema: tool.inputSchema,
                 examples: tool.metadata?.examples || [],
+                relevanceScore: score,
               });
             }
           }
@@ -236,8 +329,9 @@ export function createSearchToolsTool(
 
         logger.info('tools/search completed successfully', {
           resultsCount: results.length,
-          totalMatches: metadata.length,
+          totalMatches: scoredMetadata.length,
           detailLevel,
+          sortBy,
           actualSizeBytes: actualSize,
           reductionPercent: reductionPercent.toFixed(2),
         });
@@ -245,7 +339,7 @@ export function createSearchToolsTool(
         return {
           success: true,
           tools: results,
-          totalMatches: metadata.length,
+          totalMatches: scoredMetadata.length,
           detailLevel,
           tokenSavings:
             detailLevel !== 'full'
