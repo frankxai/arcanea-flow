@@ -53,7 +53,7 @@ async function runBenchmarks(): Promise<void> {
   console.log(`  Deferred Tools: ${tokenSavings.deferredToolCount}`);
   console.log(`  Total Tools: ${tokenSavings.totalTools}`);
   console.log(`  Estimated Token Savings: ${tokenSavings.savingsPercent}`);
-  console.log(`  Core Tool Tokens: ~${tokenSavings.estimatedCoreTokes}`);
+  console.log(`  Core Tool Tokens: ~${tokenSavings.estimatedCoreTokens}`);
   console.log(`  Deferred Tool Tokens (metadata only): ~${tokenSavings.estimatedDeferredTokens}`);
   console.log();
 
