@@ -1140,6 +1140,365 @@ Nightly  → FlashAttention Consolidation + A/B Experiments + Transfer Learning
 
 ---
 
+## 16. Lightweight Installation Strategy
+
+### 16.1 Design Principles
+
+1. **Minimal Core** - Install only essential runtime (~2MB)
+2. **Lazy Loading** - Load features on first use
+3. **Platform Detection** - Auto-select optimal backend
+4. **Progressive Enhancement** - Add capabilities as needed
+
+### 16.2 Core Package (Required)
+
+```bash
+# Minimal install - works on all platforms
+npm install claude-flow@3 --save
+# ~2MB, no native dependencies, pure JavaScript
+```
+
+**Core includes**:
+- CLI interface
+- Basic swarm coordination
+- In-memory storage
+- JavaScript-only runtime
+
+### 16.3 Modular Components (Optional)
+
+```bash
+# Install components as needed
+npx claude-flow install <component>
+
+# Available components:
+npx claude-flow install learning      # RL + trajectory tracking
+npx claude-flow install memory        # Persistent memory (SQLite/WASM)
+npx claude-flow install attention     # Flash/MoE attention mechanisms
+npx claude-flow install transport     # QUIC transport layer
+npx claude-flow install neural        # Neural pattern training
+npx claude-flow install gnn           # GNN query enhancement
+```
+
+### 16.4 Platform-Specific Installation
+
+#### Linux (Fastest)
+```bash
+npm install claude-flow@3
+npx claude-flow install native   # NAPI bindings (50-200x faster)
+# Total: ~15MB with native bindings
+```
+
+#### macOS (Apple Silicon + Intel)
+```bash
+npm install claude-flow@3
+npx claude-flow install native   # Universal binary
+# Fallback: WASM if Rosetta issues
+```
+
+#### Windows
+```bash
+npm install claude-flow@3
+npx claude-flow install wasm     # WASM backend (recommended)
+# Note: NAPI optional but requires build tools
+```
+
+### 16.5 Component Dependency Graph
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      CORE (Required)                         │
+│  CLI, Swarm Basics, In-Memory, JS Runtime (~2MB)            │
+└─────────────────────────────────────────────────────────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        │                     │                     │
+        ▼                     ▼                     ▼
+┌───────────────┐    ┌───────────────┐    ┌───────────────┐
+│    memory     │    │   learning    │    │   attention   │
+│  SQLite/WASM  │    │  RL + SONA    │    │  Flash/MoE    │
+│    (~3MB)     │    │    (~2MB)     │    │    (~1MB)     │
+└───────────────┘    └───────────────┘    └───────────────┘
+        │                     │                     │
+        │                     ▼                     │
+        │            ┌───────────────┐              │
+        └───────────▶│    neural     │◀─────────────┘
+                     │ Pattern Train │
+                     │    (~2MB)     │
+                     └───────────────┘
+                              │
+                              ▼
+                     ┌───────────────┐
+                     │      gnn      │
+                     │ Query Refine  │
+                     │    (~4MB)     │
+                     └───────────────┘
+```
+
+### 16.6 Runtime Detection & Fallback
+
+```typescript
+// Automatic runtime selection (zero config)
+const runtimeChain = [
+  'napi',    // Native bindings (fastest)
+  'wasm',    // WebAssembly (portable)
+  'js'       // Pure JavaScript (universal)
+];
+
+// Platform detection
+const platform = {
+  linux: { preferred: 'napi', fallback: 'wasm' },
+  darwin: { preferred: 'napi', fallback: 'wasm' },
+  win32: { preferred: 'wasm', fallback: 'js' }  // WASM default on Windows
+};
+```
+
+### 16.7 Feature Flags
+
+```typescript
+// .claude-flow/config.json
+{
+  "core": {
+    "runtime": "auto",           // auto | napi | wasm | js
+    "lazyLoad": true,            // Load components on first use
+    "maxMemoryMB": 512           // Memory limit for caching
+  },
+  "components": {
+    "memory": "enabled",         // enabled | disabled | lazy
+    "learning": "lazy",          // Loads when first RL session starts
+    "attention": "lazy",
+    "transport": "disabled",     // Explicitly disabled
+    "neural": "lazy",
+    "gnn": "disabled"
+  }
+}
+```
+
+### 16.8 Installation Size Comparison
+
+| Configuration | Size | Platforms | Performance |
+|---------------|------|-----------|-------------|
+| Core Only | ~2MB | All | Baseline |
+| + Memory | ~5MB | All | Persistent storage |
+| + Learning | ~7MB | All | RL capabilities |
+| + Attention | ~8MB | All | Better consensus |
+| Full (JS) | ~15MB | All | Complete features |
+| Full (NAPI) | ~25MB | Linux/Mac | Maximum speed |
+
+### 16.9 Quick Start by Use Case
+
+```bash
+# Minimal CLI usage
+npm install -g claude-flow@3
+
+# Basic swarm coordination
+npm install claude-flow@3
+
+# With persistent memory
+npm install claude-flow@3 && npx claude-flow install memory
+
+# Full learning system
+npm install claude-flow@3 && npx claude-flow install learning memory
+
+# Maximum performance (Linux/Mac)
+npm install claude-flow@3 && npx claude-flow install --all --native
+```
+
+---
+
+## 17. Testing Strategy
+
+### 17.1 Test Pyramid
+
+```
+                    ┌─────────────┐
+                    │   E2E (5%)  │  Cross-platform smoke tests
+                    ├─────────────┤
+                    │Integration  │  Component interactions
+                    │   (15%)     │
+                    ├─────────────┤
+                    │    Unit     │  Individual functions
+                    │   (80%)     │
+                    └─────────────┘
+```
+
+### 17.2 Platform Test Matrix
+
+| Test Suite | Linux | macOS Intel | macOS ARM | Windows |
+|------------|-------|-------------|-----------|---------|
+| Core | ✓ | ✓ | ✓ | ✓ |
+| NAPI bindings | ✓ | ✓ | ✓ | Optional |
+| WASM fallback | ✓ | ✓ | ✓ | ✓ |
+| Memory (SQLite) | ✓ | ✓ | ✓ | ✓ |
+| Learning (RL) | ✓ | ✓ | ✓ | ✓ |
+
+### 17.3 Benchmark Suite
+
+```bash
+# Run performance benchmarks
+npx claude-flow benchmark
+
+# Specific component benchmarks
+npx claude-flow benchmark memory --iterations 1000
+npx claude-flow benchmark learning --episodes 100
+npx claude-flow benchmark attention --batch-size 32
+
+# Compare runtimes
+npx claude-flow benchmark --runtime napi
+npx claude-flow benchmark --runtime wasm
+npx claude-flow benchmark --runtime js
+```
+
+### 17.4 Regression Detection
+
+```typescript
+// Performance thresholds (fail if exceeded)
+const thresholds = {
+  'memory.store': { p95: 10, unit: 'ms' },
+  'memory.search': { p95: 50, unit: 'ms' },
+  'learning.predict': { p95: 5, unit: 'ms' },
+  'attention.forward': { p95: 2, unit: 'ms' },
+  'startup.cold': { max: 500, unit: 'ms' },
+  'startup.warm': { max: 100, unit: 'ms' }
+};
+```
+
+---
+
+## 18. Error Handling & Recovery
+
+### 18.1 Graceful Degradation Chain
+
+```
+NAPI fails → WASM fallback → JS fallback → Error with guidance
+     │              │              │
+     ▼              ▼              ▼
+ Log warning    Log warning    Log error
+ Continue       Continue       Suggest fix
+```
+
+### 18.2 Component Failure Isolation
+
+```typescript
+// Each component fails independently
+class ComponentManager {
+  async loadComponent(name: string): Promise<Component> {
+    try {
+      return await this.loadNative(name);
+    } catch (e) {
+      console.warn(`Native ${name} unavailable, using WASM`);
+      try {
+        return await this.loadWasm(name);
+      } catch (e) {
+        console.warn(`WASM ${name} unavailable, using JS`);
+        return await this.loadJs(name);
+      }
+    }
+  }
+}
+```
+
+### 18.3 Learning Recovery
+
+```typescript
+// Automatic checkpoint and recovery
+const learningConfig = {
+  checkpointInterval: 100,      // Save every 100 episodes
+  maxRetries: 3,                // Retry failed operations
+  rollbackOnCorruption: true,   // Auto-rollback if DB corrupted
+  isolateFailures: true         // One session failure doesn't affect others
+};
+```
+
+---
+
+## 19. Monitoring & Observability
+
+### 19.1 Built-in Metrics
+
+```bash
+# View real-time metrics
+npx claude-flow metrics
+
+# Export metrics for external systems
+npx claude-flow metrics --format prometheus
+npx claude-flow metrics --format json > metrics.json
+```
+
+### 19.2 Key Metrics
+
+| Metric | Description | Alert Threshold |
+|--------|-------------|-----------------|
+| `cf_startup_ms` | Cold start time | > 1000ms |
+| `cf_memory_mb` | Memory usage | > 80% of limit |
+| `cf_component_load_ms` | Component load time | > 500ms |
+| `cf_learning_episodes` | Total episodes | - |
+| `cf_learning_success_rate` | Success percentage | < 50% |
+| `cf_storage_bytes` | Disk usage | > 1GB |
+
+### 19.3 Logging Levels
+
+```typescript
+// .claude-flow/config.json
+{
+  "logging": {
+    "level": "info",           // error | warn | info | debug | trace
+    "file": ".claude-flow/logs/claude-flow.log",
+    "maxSize": "10MB",
+    "maxFiles": 5,
+    "components": {
+      "memory": "warn",        // Per-component overrides
+      "learning": "debug"
+    }
+  }
+}
+```
+
+---
+
+## 20. Security Considerations
+
+### 20.1 Dependency Audit
+
+```bash
+# Audit before install
+npm audit claude-flow@3
+
+# Verify checksums
+npx claude-flow verify --checksums
+```
+
+### 20.2 Data Privacy
+
+| Data Type | Storage | Encryption | Retention |
+|-----------|---------|------------|-----------|
+| Patterns | Local SQLite | Optional | Configurable |
+| Trajectories | Local SQLite | Optional | 90 days default |
+| Episodes | Local SQLite | Optional | 90 days default |
+| Metrics | Local JSON | No | 30 days default |
+
+### 20.3 MCP Tool Access Control
+
+```typescript
+// .claude-flow/config.json
+{
+  "security": {
+    "mcpToolAllowlist": [
+      "swarm_*",
+      "memory_*",
+      "learning_*"
+    ],
+    "mcpToolDenylist": [
+      "admin_*"
+    ],
+    "requireConfirmation": [
+      "learning_transfer",
+      "memory_delete"
+    ]
+  }
+}
+```
+
+---
+
 *Deep review completed: 2026-01-03*
 *agentic-flow version analyzed: 2.0.1-alpha.50*
 *agentdb version analyzed: 2.0.0-alpha.3.1*

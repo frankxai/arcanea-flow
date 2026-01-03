@@ -676,6 +676,223 @@ export const memoryOptimizations = {
 
 ---
 
+## 9. Modular Learning Installation
+
+### 9.1 Learning Component Tiers
+
+```bash
+# Tier 1: Basic Learning (Minimal)
+npx claude-flow install learning:basic
+# Includes: Pattern storage, skill lookup, basic RL (Q-Learning, SARSA)
+# Size: ~1MB | Platforms: All
+
+# Tier 2: Standard Learning (Recommended)
+npx claude-flow install learning
+# Includes: Tier 1 + 5 more RL algorithms, reflexion memory, trajectory tracking
+# Size: ~2MB | Platforms: All
+
+# Tier 3: Advanced Learning (Full)
+npx claude-flow install learning:advanced
+# Includes: Tier 2 + causal graphs, nightly learner, FlashAttention
+# Size: ~4MB | Platforms: All (NAPI for FlashAttention speedup)
+```
+
+### 9.2 Learning Feature Matrix
+
+| Feature | Basic | Standard | Advanced |
+|---------|-------|----------|----------|
+| Pattern Storage | ✓ | ✓ | ✓ |
+| Skill Library | ✓ | ✓ | ✓ |
+| Q-Learning | ✓ | ✓ | ✓ |
+| SARSA | ✓ | ✓ | ✓ |
+| DQN | - | ✓ | ✓ |
+| PPO | - | ✓ | ✓ |
+| Actor-Critic | - | ✓ | ✓ |
+| Decision Transformer | - | ✓ | ✓ |
+| MCTS | - | ✓ | ✓ |
+| Reflexion Memory | - | ✓ | ✓ |
+| Trajectory Tracking | - | ✓ | ✓ |
+| Causal Memory Graph | - | - | ✓ |
+| Nightly Learner | - | - | ✓ |
+| FlashAttention | - | - | ✓ |
+| A/B Experiments | - | - | ✓ |
+| Transfer Learning | - | - | ✓ |
+
+### 9.3 Platform-Optimized Learning
+
+```bash
+# Linux: Maximum performance
+npx claude-flow install learning:advanced --native
+# Uses NAPI for FlashAttention (4x faster, 75% less memory)
+
+# macOS: Universal binary
+npx claude-flow install learning:advanced
+# Auto-detects ARM vs Intel, uses native when possible
+
+# Windows: WASM-optimized
+npx claude-flow install learning:advanced --wasm
+# Full features via WebAssembly, no build tools required
+```
+
+### 9.4 Lazy Loading Configuration
+
+```typescript
+// .claude-flow/config.json
+{
+  "learning": {
+    "tier": "standard",              // basic | standard | advanced
+    "lazyLoad": {
+      "algorithms": true,            // Load RL algorithms on first use
+      "causal": true,                // Load causal graph when queried
+      "nightly": true                // Load nightly learner at scheduled time
+    },
+    "preload": [
+      "pattern_storage",             // Always preload for fast pattern lookup
+      "skill_library"                // Always preload for skill suggestions
+    ]
+  }
+}
+```
+
+### 9.5 Memory-Constrained Environments
+
+```typescript
+// Lightweight mode for constrained environments
+{
+  "learning": {
+    "tier": "basic",
+    "memoryLimit": "128MB",
+    "episodeBuffer": 100,           // Smaller buffer
+    "maxPatterns": 1000,            // Limit stored patterns
+    "pruneOnLimit": true,           // Auto-prune old patterns
+    "disableEmbeddings": false      // Keep embeddings for search
+  }
+}
+```
+
+---
+
+## 10. Quick Start Recipes
+
+### 10.1 Minimal Learning Setup
+
+```bash
+# Install core + basic learning
+npm install claude-flow@3
+npx claude-flow install learning:basic
+
+# Start using immediately
+npx claude-flow learning start --algorithm q-learning
+```
+
+### 10.2 Recommended Learning Setup
+
+```bash
+# Install with persistent memory
+npm install claude-flow@3
+npx claude-flow install memory learning
+
+# Initialize with sensible defaults
+npx claude-flow init --learning
+```
+
+### 10.3 Production Learning Setup
+
+```bash
+# Full installation with native bindings
+npm install claude-flow@3
+npx claude-flow install --all --native
+
+# Configure for production
+cat > .claude-flow/config.json << 'EOF'
+{
+  "learning": {
+    "tier": "advanced",
+    "nightly": {
+      "enabled": true,
+      "schedule": "0 2 * * *"
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "exportMetrics": true
+  }
+}
+EOF
+```
+
+### 10.4 CI/CD Learning Setup
+
+```bash
+# Minimal for CI (no native deps)
+npm install claude-flow@3
+npx claude-flow install learning:basic --wasm
+
+# Run tests with learning
+npx claude-flow test --with-learning
+```
+
+---
+
+## 11. Upgrade Paths
+
+### 11.1 Tier Upgrades
+
+```bash
+# Upgrade from basic to standard
+npx claude-flow install learning --upgrade
+
+# Upgrade from standard to advanced
+npx claude-flow install learning:advanced --upgrade
+
+# Downgrade (preserves data)
+npx claude-flow install learning:basic --downgrade
+```
+
+### 11.2 Data Migration
+
+```bash
+# Export learning data before major upgrade
+npx claude-flow learning export --output learning-backup.json
+
+# Import after upgrade
+npx claude-flow learning import --input learning-backup.json
+
+# Verify data integrity
+npx claude-flow learning verify
+```
+
+---
+
+## 12. Troubleshooting
+
+### 12.1 Common Issues
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Slow startup | Too many preloaded features | Enable lazy loading |
+| High memory | Large episode buffer | Reduce `episodeBuffer` |
+| NAPI errors | Missing build tools | Use `--wasm` flag |
+| Windows failures | Native dep issues | Use `--wasm` explicitly |
+
+### 12.2 Diagnostic Commands
+
+```bash
+# Check learning system status
+npx claude-flow learning status
+
+# View component load times
+npx claude-flow learning diagnostics
+
+# Test RL algorithms
+npx claude-flow learning test --algorithm ppo
+
+# Verify installation
+npx claude-flow verify --component learning
+```
+
+---
+
 *Optimized Learning Plan - v3.0*
 *Packages: agentic-flow@2.0.1-alpha.50, agentdb@2.0.0-alpha.3.1*
 *Generated: 2026-01-03*
