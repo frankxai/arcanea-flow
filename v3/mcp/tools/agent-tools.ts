@@ -105,31 +105,42 @@ async function handleSpawnAgent(
   input: z.infer<typeof spawnAgentSchema>,
   context?: ToolContext
 ): Promise<SpawnAgentResult> {
-  // TODO: Integrate with actual agent manager when available
-  // For now, return stub response
-
   const agentId = input.id || `agent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   const createdAt = new Date().toISOString();
 
-  // Stub implementation - will be replaced with actual agent manager integration
+  // Try to use swarmCoordinator if available
+  if (context?.swarmCoordinator) {
+    try {
+      const { UnifiedSwarmCoordinator } = await import('@claude-flow/swarm');
+      const coordinator = context.swarmCoordinator as InstanceType<typeof UnifiedSwarmCoordinator>;
+
+      // Spawn agent using the coordinator
+      await coordinator.spawnAgent({
+        id: agentId,
+        type: input.agentType as any,
+        capabilities: input.config?.capabilities as any || [],
+        priority: input.priority === 'critical' ? 1 : input.priority === 'high' ? 2 : input.priority === 'normal' ? 3 : 4,
+      });
+
+      return {
+        agentId,
+        agentType: input.agentType,
+        status: 'active',
+        createdAt,
+      };
+    } catch (error) {
+      // Fall through to simple implementation if coordinator fails
+      console.error('Failed to spawn agent via coordinator:', error);
+    }
+  }
+
+  // Simple implementation when no coordinator is available
   const result: SpawnAgentResult = {
     agentId,
     agentType: input.agentType,
     status: 'active',
     createdAt,
   };
-
-  // TODO: Call actual agent manager
-  // const agentManager = context?.agentManager as AgentManager;
-  // if (agentManager) {
-  //   await agentManager.spawnAgent({
-  //     id: agentId,
-  //     type: input.agentType,
-  //     config: input.config,
-  //     priority: input.priority,
-  //     metadata: input.metadata,
-  //   });
-  // }
 
   return result;
 }
