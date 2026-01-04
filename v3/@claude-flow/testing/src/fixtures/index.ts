@@ -4,14 +4,20 @@
  * Central export for all test fixtures
  */
 
-// Agent fixtures
+// Agent fixtures (comprehensive)
+export * from './agent-fixtures.js';
+
+// Memory fixtures (AgentDB, HNSW, ReasoningBank)
+export * from './memory-fixtures.js';
+
+// Swarm fixtures (topologies, coordination, consensus)
+export * from './swarm-fixtures.js';
+
+// MCP fixtures (tools, resources, prompts)
+export * from './mcp-fixtures.js';
+
+// Legacy exports for backward compatibility
 export * from './agents.js';
-
-// Task fixtures
 export * from './tasks.js';
-
-// Memory entry fixtures
 export * from './memory-entries.js';
-
-// Configuration fixtures
 export * from './configurations.js';
