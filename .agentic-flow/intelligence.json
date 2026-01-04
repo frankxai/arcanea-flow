@@ -146,7 +146,7 @@
       "test-engineer": 0.6
     },
     "command:": {
-      "success": 0.9997572505549683
+      "success": 0.9997815254994715
     }
   },
   "sequences": {},
@@ -456,8 +456,8 @@
   },
   "errorPatterns": [],
   "metrics": {
-    "totalRoutes": 147,
-    "successfulRoutes": 147,
+    "totalRoutes": 148,
+    "successfulRoutes": 148,
     "routingHistory": [
       {
         "timestamp": "2026-01-04T15:51:13.039Z",

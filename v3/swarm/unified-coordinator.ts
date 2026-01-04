@@ -141,6 +141,13 @@ export class UnifiedSwarmCoordinator extends EventEmitter implements IUnifiedSwa
   private consensusEngine: ConsensusEngine;
   private agentPools: Map<AgentType, AgentPool> = new Map();
 
+  // Domain-based tracking for 15-agent hierarchy
+  private domainConfigs: Map<AgentDomain, DomainConfig> = new Map();
+  private domainPools: Map<AgentDomain, AgentPool> = new Map();
+  private agentDomainMap: Map<string, AgentDomain> = new Map();
+  private taskAssignments: Map<string, TaskAssignment> = new Map();
+  private domainTaskQueues: Map<AgentDomain, string[]> = new Map();
+
   // Performance tracking
   private startTime?: Date;
   private taskCounter: number = 0;
