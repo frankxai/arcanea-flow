@@ -72,3 +72,13 @@ export {
   MemoryIndexProjection,
   MemoryProjectionState,
 } from './projections.js';
+
+// State Reconstruction (ADR-007)
+export {
+  StateReconstructor,
+  createStateReconstructor,
+  AgentAggregate,
+  TaskAggregate,
+  type AggregateRoot,
+  type ReconstructorOptions,
+} from './state-reconstructor.js';
