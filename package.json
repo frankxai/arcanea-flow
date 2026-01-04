@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "agentdb": "alpha",
-    "agentic-flow": "alpha",
+    "agentic-flow": "^2.0.1-alpha.79",
     "bcrypt": "^5.1.1",
     "zod": "^3.22.4"
   },
