@@ -130,7 +130,7 @@ export class FlashAttentionOptimizer {
    * Benchmark Flash Attention vs baseline attention
    * @returns Comprehensive benchmark results with speedup metrics
    */
-  async benchmark(): Promise<BenchmarkResult> {
+  benchmark(): BenchmarkResult {
     const dim = this.dim;
     const numKeys = 100;
     const iterations = 1000;
