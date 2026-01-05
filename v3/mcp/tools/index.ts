@@ -356,4 +356,7 @@ export default {
   memoryTools,
   configTools,
   hooksTools,
+  taskTools,
+  systemTools,
+  sessionTools,
 };
