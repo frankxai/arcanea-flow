@@ -513,7 +513,9 @@ export class FederationHub extends EventEmitter {
     const agent = this.ephemeralAgents.get(agentId);
     if (!agent) return false;
 
+    const oldStatus = agent.status;
     agent.status = 'completing';
+    this.updateAgentStatusIndex(agent, oldStatus);
     agent.result = result;
     agent.completedAt = new Date();
 
@@ -525,6 +527,7 @@ export class FederationHub extends EventEmitter {
     setTimeout(() => {
       const a = this.ephemeralAgents.get(agentId);
       if (a) {
+        this.updateAgentStatusIndex(a, 'completing');
         a.status = 'terminated';
         this.emitEvent('agent_completed', a.swarmId, agentId);
       }
