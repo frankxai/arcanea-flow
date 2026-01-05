@@ -283,10 +283,41 @@ export class HttpTransport extends EventEmitter implements ITransport {
   private setupWebSocketHandlers(): void {
     if (!this.wss) return;
 
-    this.wss.on('connection', (ws) => {
+    // SECURITY: Handle WebSocket authentication via upgrade request
+    this.wss.on('connection', (ws, req) => {
+      // Validate authentication if enabled
+      if (this.config.auth?.enabled) {
+        const url = new URL(req.url || '', `http://${req.headers.host}`);
+        const token = url.searchParams.get('token') || req.headers['authorization']?.replace(/^Bearer\s+/i, '');
+
+        if (!token) {
+          this.logger.warn('WebSocket connection rejected: no authentication token');
+          ws.close(4001, 'Authentication required');
+          return;
+        }
+
+        // SECURITY: Timing-safe token validation
+        let valid = false;
+        if (this.config.auth.tokens?.length) {
+          for (const validToken of this.config.auth.tokens) {
+            if (this.timingSafeCompare(token, validToken)) {
+              valid = true;
+              break;
+            }
+          }
+        }
+
+        if (!valid) {
+          this.logger.warn('WebSocket connection rejected: invalid token');
+          ws.close(4003, 'Invalid token');
+          return;
+        }
+      }
+
       this.activeConnections.add(ws);
       this.logger.info('WebSocket client connected', {
         total: this.activeConnections.size,
+        authenticated: !!this.config.auth?.enabled,
       });
 
       ws.on('message', async (data) => {
@@ -441,6 +472,26 @@ export class HttpTransport extends EventEmitter implements ITransport {
     }
   }
 
+  /**
+   * SECURITY: Timing-safe token comparison to prevent timing attacks
+   */
+  private timingSafeCompare(a: string, b: string): boolean {
+    const crypto = require('crypto');
+
+    // Ensure both strings are the same length for timing-safe comparison
+    const bufA = Buffer.from(a, 'utf-8');
+    const bufB = Buffer.from(b, 'utf-8');
+
+    // If lengths differ, still do a comparison to prevent length-based timing
+    if (bufA.length !== bufB.length) {
+      // Compare against itself to maintain constant time
+      crypto.timingSafeEqual(bufA, bufA);
+      return false;
+    }
+
+    return crypto.timingSafeEqual(bufA, bufB);
+  }
+
   private validateAuth(req: Request): { valid: boolean; error?: string } {
     const auth = req.headers.authorization;
 
@@ -456,7 +507,15 @@ export class HttpTransport extends EventEmitter implements ITransport {
     const token = tokenMatch[1];
 
     if (this.config.auth?.tokens?.length) {
-      if (!this.config.auth.tokens.includes(token)) {
+      // SECURITY: Use timing-safe comparison to prevent timing attacks
+      let valid = false;
+      for (const validToken of this.config.auth.tokens) {
+        if (this.timingSafeCompare(token, validToken)) {
+          valid = true;
+          break;
+        }
+      }
+      if (!valid) {
         return { valid: false, error: 'Invalid token' };
       }
     }

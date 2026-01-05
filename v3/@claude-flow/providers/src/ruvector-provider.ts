@@ -91,7 +91,7 @@ interface RuVectorResponse {
 }
 
 export class RuVectorProvider extends BaseProvider {
-  readonly name: LLMProvider = 'custom'; // RuVector is custom provider type
+  readonly name: LLMProvider = 'ruvector';
   readonly capabilities: ProviderCapabilities = {
     supportedModels: [
       // RuVector-managed models
@@ -99,13 +99,18 @@ export class RuVectorProvider extends BaseProvider {
       'ruvector-fast',        // Optimized for speed
       'ruvector-quality',     // Optimized for quality
       'ruvector-balanced',    // Balanced speed/quality
-      // Local models via ruvLLM
+      // Local models via ruvLLM or Ollama fallback
       'llama3.2',
       'mistral',
       'phi-4',
       'deepseek-coder',
       'codellama',
       'qwen2.5',
+      'qwen2.5:0.5b',         // CPU-friendly Qwen
+      'qwen2.5:1.5b',
+      'smollm:135m',          // SmolLM models
+      'smollm:360m',
+      'tinyllama',
     ],
     maxContextLength: {
       'ruvector-auto': 128000,
@@ -159,9 +164,12 @@ export class RuVectorProvider extends BaseProvider {
     },
   };
 
-  private baseUrl: string = 'http://localhost:8787';
+  private baseUrl: string = 'http://localhost:3000'; // ruvLLM default port
+  private ollamaUrl: string = 'http://localhost:11434';
   private ruvectorConfig: RuVectorConfig = {};
   private ruvllm: unknown; // Dynamic import of @ruvector/ruvllm
+  private useOllamaFallback: boolean = false;
+  private ruvllmAvailable: boolean = false;
 
   constructor(options: BaseProviderOptions) {
     super(options);
@@ -169,33 +177,56 @@ export class RuVectorProvider extends BaseProvider {
   }
 
   protected async doInitialize(): Promise<void> {
-    this.baseUrl = this.config.apiUrl || 'http://localhost:8787';
+    // Configure URLs from options
+    this.baseUrl = this.config.apiUrl || 'http://localhost:3000';
+    this.ollamaUrl = (this.config.providerOptions as any)?.ollamaUrl || 'http://localhost:11434';
 
-    // Try to dynamically import @ruvector/ruvllm
+    // Try to dynamically import @ruvector/ruvllm native module
     try {
       this.ruvllm = await import('@ruvector/ruvllm').catch(() => null);
       if (this.ruvllm) {
-        this.logger.info('RuVector ruvLLM module loaded');
+        this.logger.info('RuVector ruvLLM native module loaded');
+        this.ruvllmAvailable = true;
       }
     } catch {
-      this.logger.warn('RuVector ruvLLM module not available, using HTTP API');
+      this.logger.debug('RuVector ruvLLM native module not available');
     }
 
-    // Check if RuVector server is running
+    // Check if RuVector HTTP server is running
     const health = await this.doHealthCheck();
-    if (!health.healthy) {
-      this.logger.warn('RuVector server not detected. Using fallback mode.');
+    if (health.healthy) {
+      this.logger.info('RuVector server connected');
+      return;
+    }
+
+    // Fallback: Check if Ollama is running for local model execution
+    try {
+      const ollamaHealth = await fetch(`${this.ollamaUrl}/api/tags`, {
+        signal: AbortSignal.timeout(3000),
+      });
+      if (ollamaHealth.ok) {
+        this.useOllamaFallback = true;
+        this.logger.info('Using Ollama as fallback for local model execution');
+      }
+    } catch {
+      this.logger.warn('Neither RuVector nor Ollama available. Provider may not work.');
     }
   }
 
   protected async doComplete(request: LLMRequest): Promise<LLMResponse> {
-    const ruvectorRequest = this.buildRequest(request);
+    // Use Ollama fallback if RuVector server isn't available
+    if (this.useOllamaFallback) {
+      return this.completeWithOllama(request);
+    }
+
+    const ruvectorRequest = this.buildRuvectorQuery(request);
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.config.timeout || 120000);
 
     try {
-      const response = await fetch(`${this.baseUrl}/v1/chat/completions`, {
+      // Use ruvLLM's /query endpoint (not OpenAI-compatible)
+      const response = await fetch(`${this.baseUrl}/query`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -213,6 +244,94 @@ export class RuVectorProvider extends BaseProvider {
 
       const data = await response.json() as RuVectorResponse;
       return this.transformResponse(data, request);
+    } catch (error) {
+      clearTimeout(timeout);
+
+      // Auto-fallback to Ollama on connection error
+      if (error instanceof Error && (error.message.includes('ECONNREFUSED') || error.message.includes('fetch failed'))) {
+        this.useOllamaFallback = true;
+        this.logger.info('RuVector connection failed, falling back to Ollama');
+        return this.completeWithOllama(request);
+      }
+
+      throw this.transformError(error);
+    }
+  }
+
+  /**
+   * Fallback completion using Ollama API
+   */
+  private async completeWithOllama(request: LLMRequest): Promise<LLMResponse> {
+    const model = request.model || this.config.model;
+
+    const ollamaRequest = {
+      model,
+      messages: request.messages.map((msg) => ({
+        role: msg.role === 'tool' ? 'assistant' : msg.role,
+        content: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content),
+      })),
+      stream: false,
+      options: {
+        temperature: request.temperature ?? this.config.temperature ?? 0.7,
+        num_predict: request.maxTokens || this.config.maxTokens || 2048,
+      },
+    };
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.config.timeout || 120000);
+
+    try {
+      const response = await fetch(`${this.ollamaUrl}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ollamaRequest),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeout);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new LLMProviderError(
+          `Ollama error: ${errorText}`,
+          `OLLAMA_${response.status}`,
+          'ruvector',
+          response.status,
+          true
+        );
+      }
+
+      const data = await response.json() as {
+        message?: { content: string };
+        prompt_eval_count?: number;
+        eval_count?: number;
+      };
+
+      const promptTokens = data.prompt_eval_count || this.estimateTokens(JSON.stringify(request.messages));
+      const completionTokens = data.eval_count || this.estimateTokens(data.message?.content || '');
+
+      return {
+        id: `ruvector-ollama-${Date.now()}`,
+        model: model as LLMModel,
+        provider: 'ruvector',
+        content: data.message?.content || '',
+        usage: {
+          promptTokens,
+          completionTokens,
+          totalTokens: promptTokens + completionTokens,
+        },
+        cost: {
+          promptCost: 0,
+          completionCost: 0,
+          totalCost: 0,
+          currency: 'USD',
+        },
+        finishReason: 'stop',
+        metadata: {
+          backend: 'ollama',
+          sona: { enabled: false },
+        },
+      };
     } catch (error) {
       clearTimeout(timeout);
       throw this.transformError(error);
@@ -407,6 +526,29 @@ export class RuVectorProvider extends BaseProvider {
         },
       };
     }
+  }
+
+  /**
+   * Build ruvLLM native API query format
+   * See: https://github.com/ruvnet/ruvector/tree/main/examples/ruvLLM
+   */
+  private buildRuvectorQuery(request: LLMRequest): { query: string; session_id?: string } {
+    // ruvLLM uses simple query format, not OpenAI-compatible
+    const lastUserMessage = [...request.messages].reverse().find(m => m.role === 'user');
+    const systemPrompt = request.messages.find(m => m.role === 'system');
+
+    let query = '';
+    if (systemPrompt) {
+      query += `[System]: ${typeof systemPrompt.content === 'string' ? systemPrompt.content : JSON.stringify(systemPrompt.content)}\n\n`;
+    }
+    query += typeof lastUserMessage?.content === 'string'
+      ? lastUserMessage.content
+      : JSON.stringify(lastUserMessage?.content || '');
+
+    return {
+      query,
+      session_id: request.requestId,
+    };
   }
 
   private buildRequest(request: LLMRequest, stream = false): RuVectorRequest {

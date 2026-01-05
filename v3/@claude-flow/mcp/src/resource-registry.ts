@@ -24,6 +24,7 @@ export interface ResourceRegistryOptions {
   maxSubscriptionsPerResource?: number;
   cacheEnabled?: boolean;
   cacheTTL?: number;
+  maxCacheSize?: number; // SECURITY: Prevent unbounded cache growth
 }
 
 interface CachedResource {
@@ -59,6 +60,7 @@ export class ResourceRegistry extends EventEmitter {
       maxSubscriptionsPerResource: options.maxSubscriptionsPerResource ?? 100,
       cacheEnabled: options.cacheEnabled ?? true,
       cacheTTL: options.cacheTTL ?? 60000, // 1 minute default
+      maxCacheSize: options.maxCacheSize ?? 1000, // SECURITY: Default max 1000 entries
     };
   }
 
@@ -174,8 +176,18 @@ export class ResourceRegistry extends EventEmitter {
 
     const contents = await handler(uri);
 
-    // Cache the result
+    // Cache the result with size limit (LRU eviction)
     if (this.options.cacheEnabled) {
+      // SECURITY: Enforce max cache size to prevent memory exhaustion
+      if (this.cache.size >= this.options.maxCacheSize) {
+        // Remove oldest entry (first entry in Map iteration order)
+        const oldestKey = this.cache.keys().next().value;
+        if (oldestKey) {
+          this.cache.delete(oldestKey);
+          this.logger.debug('Cache evicted oldest entry', { uri: oldestKey });
+        }
+      }
+
       this.cache.set(uri, {
         content: contents,
         cachedAt: Date.now(),
@@ -341,19 +353,44 @@ export class ResourceRegistry extends EventEmitter {
   }
 
   /**
+   * Escape regex metacharacters to prevent ReDoS attacks
+   * SECURITY: Critical for preventing regex denial of service
+   */
+  private escapeRegex(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  /**
    * Check if URI matches any template
+   * SECURITY: Uses escaped regex to prevent ReDoS
    */
   private matchesTemplate(uri: string, template?: string): boolean {
     if (template) {
-      // Simple template matching (supports {param} style)
-      const regex = new RegExp('^' + template.replace(/\{[^}]+\}/g, '[^/]+') + '$');
-      return regex.test(uri);
+      // SECURITY: Escape regex metacharacters before converting template
+      // First extract placeholders, escape the rest, then add placeholder pattern
+      const escaped = this.escapeRegex(template);
+      // Replace escaped placeholder braces with the pattern
+      const pattern = escaped.replace(/\\\{[^}]+\\\}/g, '[^/]+');
+      try {
+        const regex = new RegExp('^' + pattern + '$');
+        return regex.test(uri);
+      } catch {
+        // Invalid regex pattern - return false safely
+        return false;
+      }
     }
 
     for (const t of this.templates.keys()) {
-      const regex = new RegExp('^' + t.replace(/\{[^}]+\}/g, '[^/]+') + '$');
-      if (regex.test(uri)) {
-        return true;
+      const escaped = this.escapeRegex(t);
+      const pattern = escaped.replace(/\\\{[^}]+\\\}/g, '[^/]+');
+      try {
+        const regex = new RegExp('^' + pattern + '$');
+        if (regex.test(uri)) {
+          return true;
+        }
+      } catch {
+        // Skip invalid patterns
+        continue;
       }
     }
     return false;
@@ -426,6 +463,7 @@ export function createTextResource(
 
 /**
  * Helper to create a file resource
+ * SECURITY: Validates path to prevent path traversal attacks
  */
 export function createFileResource(
   uri: string,
@@ -434,6 +472,7 @@ export function createFileResource(
   options?: {
     description?: string;
     mimeType?: string;
+    allowedBasePaths?: string[]; // Security: restrict to these base paths
   }
 ): { resource: MCPResource; handler: ResourceHandler } {
   const resource: MCPResource = {
@@ -445,7 +484,39 @@ export function createFileResource(
 
   const handler: ResourceHandler = async () => {
     const fs = await import('fs/promises');
-    const content = await fs.readFile(filePath);
+    const path = await import('path');
+
+    // SECURITY: Normalize and validate the path
+    const normalizedPath = path.normalize(filePath);
+
+    // Prevent path traversal
+    if (normalizedPath.includes('..') || normalizedPath.includes('\0')) {
+      throw new Error('Invalid file path: path traversal detected');
+    }
+
+    // Prevent access to sensitive system paths
+    const blockedPaths = ['/etc/', '/proc/', '/sys/', '/dev/', '/root/', '/var/log/'];
+    const lowerPath = normalizedPath.toLowerCase();
+    for (const blocked of blockedPaths) {
+      if (lowerPath.startsWith(blocked) || lowerPath.includes('/.')) {
+        throw new Error('Access to system paths is not allowed');
+      }
+    }
+
+    // If allowedBasePaths specified, validate against them
+    if (options?.allowedBasePaths && options.allowedBasePaths.length > 0) {
+      const resolvedPath = path.resolve(normalizedPath);
+      const isAllowed = options.allowedBasePaths.some((basePath) => {
+        const resolvedBase = path.resolve(basePath);
+        return resolvedPath.startsWith(resolvedBase);
+      });
+
+      if (!isAllowed) {
+        throw new Error('File path is outside allowed directories');
+      }
+    }
+
+    const content = await fs.readFile(normalizedPath);
     return [
       {
         uri,
