@@ -917,7 +917,8 @@ export class FederationHub extends EventEmitter {
         agent.completedAt &&
         now.getTime() - agent.completedAt.getTime() > cleanupThreshold
       ) {
-        this.ephemeralAgents.delete(id);
+        this.removeAgentFromIndexes(agent);
+        this.ephemeralAgents.delete(agentId);
       }
     }
   }
