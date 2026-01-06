@@ -362,8 +362,8 @@ export interface SimplePluginConfig {
  * });
  * ```
  */
-export function createSimplePlugin(config: SimplePluginConfig): BasePlugin {
-  return new SimplePlugin(config);
+export function createSimplePlugin(config: SimplePluginConfig): IPlugin {
+  return new SimplePlugin(config) as IPlugin;
 }
 
 class SimplePlugin extends BasePlugin {
