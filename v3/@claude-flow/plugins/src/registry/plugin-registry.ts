@@ -8,7 +8,6 @@ import { EventEmitter } from 'events';
 import type {
   PluginContext,
   PluginConfig,
-  PluginLifecycleState,
   PluginMetadata,
   IEventBus,
   ILogger,
