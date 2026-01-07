@@ -50,15 +50,46 @@ const COLORS = {
 
 type ColorName = keyof typeof COLORS;
 
+export type VerbosityLevel = 'quiet' | 'normal' | 'verbose' | 'debug';
+
 export class OutputFormatter {
   private colorEnabled: boolean;
   private outputStream: NodeJS.WriteStream;
   private errorStream: NodeJS.WriteStream;
+  private verbosity: VerbosityLevel;
 
-  constructor(options: { color?: boolean } = {}) {
+  constructor(options: { color?: boolean; verbosity?: VerbosityLevel } = {}) {
     this.colorEnabled = options.color ?? this.supportsColor();
     this.outputStream = process.stdout;
     this.errorStream = process.stderr;
+    this.verbosity = options.verbosity ?? 'normal';
+  }
+
+  /**
+   * Set verbosity level
+   * - quiet: Only errors and direct results
+   * - normal: Errors, warnings, info, and results
+   * - verbose: All of normal + debug messages
+   * - debug: All output including trace
+   */
+  setVerbosity(level: VerbosityLevel): void {
+    this.verbosity = level;
+  }
+
+  getVerbosity(): VerbosityLevel {
+    return this.verbosity;
+  }
+
+  isQuiet(): boolean {
+    return this.verbosity === 'quiet';
+  }
+
+  isVerbose(): boolean {
+    return this.verbosity === 'verbose' || this.verbosity === 'debug';
+  }
+
+  isDebug(): boolean {
+    return this.verbosity === 'debug';
   }
 
   private supportsColor(): boolean {
@@ -136,11 +167,13 @@ export class OutputFormatter {
   // ============================================
 
   printSuccess(message: string): void {
+    // Success always shows (result output)
     const icon = this.color('[OK]', 'green', 'bold');
     this.writeln(`${icon} ${message}`);
   }
 
   printError(message: string, details?: string): void {
+    // Errors always show
     const icon = this.color('[ERROR]', 'red', 'bold');
     this.writeErrorln(`${icon} ${message}`);
     if (details) {
@@ -149,17 +182,30 @@ export class OutputFormatter {
   }
 
   printWarning(message: string): void {
+    // Warnings suppressed in quiet mode
+    if (this.verbosity === 'quiet') return;
     const icon = this.color('[WARN]', 'yellow', 'bold');
     this.writeln(`${icon} ${message}`);
   }
 
   printInfo(message: string): void {
+    // Info suppressed in quiet mode
+    if (this.verbosity === 'quiet') return;
     const icon = this.color('[INFO]', 'blue', 'bold');
     this.writeln(`${icon} ${message}`);
   }
 
   printDebug(message: string): void {
+    // Debug only shows in verbose/debug mode
+    if (this.verbosity !== 'verbose' && this.verbosity !== 'debug') return;
     const icon = this.color('[DEBUG]', 'gray');
+    this.writeln(`${icon} ${this.dim(message)}`);
+  }
+
+  printTrace(message: string): void {
+    // Trace only shows in debug mode
+    if (this.verbosity !== 'debug') return;
+    const icon = this.color('[TRACE]', 'gray', 'dim');
     this.writeln(`${icon} ${this.dim(message)}`);
   }
 

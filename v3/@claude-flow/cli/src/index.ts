@@ -78,6 +78,21 @@ export class CLI {
         this.output.setColorEnabled(false);
       }
 
+      // Set verbosity level based on flags
+      if (flags.quiet) {
+        this.output.setVerbosity('quiet');
+      } else if (flags.verbose) {
+        this.output.setVerbosity(process.env.DEBUG ? 'debug' : 'verbose');
+      }
+
+      // Verbose mode: show parsed arguments
+      if (this.output.isVerbose()) {
+        this.output.printDebug(`Command: ${commandPath.join(' ') || '(none)'}`);
+        this.output.printDebug(`Positional: [${positional.join(', ')}]`);
+        this.output.printDebug(`Flags: ${JSON.stringify(Object.fromEntries(Object.entries(flags).filter(([k]) => k !== '_')))}`);
+        this.output.printDebug(`CWD: ${process.cwd()}`);
+      }
+
       // No command - show help
       if (commandPath.length === 0 || flags.help || flags.h) {
         if (commandPath.length > 0) {
@@ -176,7 +191,16 @@ export class CLI {
 
       // Execute command
       if (targetCommand.action) {
+        if (this.output.isVerbose()) {
+          this.output.printDebug(`Executing: ${targetCommand.name}`);
+        }
+
+        const startTime = Date.now();
         const result = await targetCommand.action(ctx);
+
+        if (this.output.isVerbose()) {
+          this.output.printDebug(`Completed in ${Date.now() - startTime}ms`);
+        }
 
         if (result && !result.success) {
           process.exit(result.exitCode || 1);
@@ -379,7 +403,7 @@ export * from './types.js';
 export { CommandParser, commandParser } from './parser.js';
 
 // Output
-export { OutputFormatter, output, Progress, Spinner } from './output.js';
+export { OutputFormatter, output, Progress, Spinner, type VerbosityLevel } from './output.js';
 
 // Prompt
 export * from './prompt.js';
