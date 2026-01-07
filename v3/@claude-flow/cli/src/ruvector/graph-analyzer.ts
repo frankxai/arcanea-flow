@@ -320,7 +320,7 @@ function resolveImportPath(importPath: string, fromFile: string, rootDir: string
 // ============================================================================
 
 /**
- * Build dependency graph from source directory
+ * Build dependency graph from source directory (with caching)
  */
 export async function buildDependencyGraph(
   rootDir: string,
@@ -328,8 +328,18 @@ export async function buildDependencyGraph(
     include?: string[];
     exclude?: string[];
     maxDepth?: number;
+    skipCache?: boolean;
   } = {}
 ): Promise<DependencyGraph> {
+  // Check cache first
+  const cacheKey = `${rootDir}:${JSON.stringify(options)}`;
+  if (!options.skipCache) {
+    const cached = graphCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < GRAPH_CACHE_TTL_MS) {
+      return cached.graph;
+    }
+  }
+
   const startTime = Date.now();
   const nodes = new Map<string, GraphNode>();
   const edges: GraphEdge[] = [];
