@@ -118,13 +118,18 @@ export class CLI {
       // Find and execute command
       const commandName = commandPath[0];
       // First check the parser's registry (for dynamically registered commands)
-      // Then fall back to the static registry
-      const command = this.parser.getCommand(commandName) || getCommand(commandName);
+      // Then fall back to the static registry, then try lazy loading
+      let command = this.parser.getCommand(commandName) || getCommand(commandName);
+
+      // If not found in sync registry, try lazy loading
+      if (!command && hasCommand(commandName)) {
+        command = await getCommandAsync(commandName);
+      }
 
       if (!command) {
         this.output.printError(`Unknown command: ${commandName}`);
-        // Smart suggestions
-        const availableCommands = Array.from(new Set(commands.map(c => c.name)));
+        // Smart suggestions - include lazy-loadable commands in suggestions
+        const availableCommands = Array.from(new Set([...commands.map(c => c.name), ...getCommandNames()]));
         const { message } = suggestCommand(commandName, availableCommands);
         this.output.writeln(this.output.dim(`  ${message}`));
         process.exit(1);
