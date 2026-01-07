@@ -179,8 +179,8 @@ export const main = util;
 export const util = 'util';
 `);
 
-      const graph = await buildDependencyGraph(testDir);
-      const analysis = await analyzeGraph(graph);
+      // analyzeGraph expects a rootDir string, not a DependencyGraph
+      const analysis = await analyzeGraph(testDir);
 
       expect(analysis).toHaveProperty('graph');
       expect(analysis).toHaveProperty('boundaries');
@@ -198,8 +198,8 @@ import { b } from './b';
 export const c = a + b;
 `);
 
-      const graph = await buildDependencyGraph(testDir);
-      const analysis = await analyzeGraph(graph);
+      // analyzeGraph expects a rootDir string, not a DependencyGraph
+      const analysis = await analyzeGraph(testDir);
 
       // Verify analysis structure - nodeCount may be 0 if files don't parse correctly
       expect(analysis.statistics).toHaveProperty('nodeCount');
@@ -208,6 +208,36 @@ export const c = a + b;
       expect(analysis.statistics).toHaveProperty('maxDegree');
       expect(analysis.statistics).toHaveProperty('density');
       expect(analysis.statistics).toHaveProperty('componentCount');
+    });
+
+    it('should respect includeBoundaries option', async () => {
+      await writeFile(join(testDir, 'a.ts'), `export const a = 1;`);
+
+      const analysisWithBoundaries = await analyzeGraph(testDir, { includeBoundaries: true });
+      const analysisWithoutBoundaries = await analyzeGraph(testDir, { includeBoundaries: false });
+
+      expect(analysisWithBoundaries.boundaries).toBeDefined();
+      expect(analysisWithoutBoundaries.boundaries).toBeUndefined();
+    });
+
+    it('should respect includeModules option', async () => {
+      await writeFile(join(testDir, 'a.ts'), `export const a = 1;`);
+
+      const analysisWithModules = await analyzeGraph(testDir, { includeModules: true });
+      const analysisWithoutModules = await analyzeGraph(testDir, { includeModules: false });
+
+      expect(analysisWithModules.communities).toBeDefined();
+      expect(analysisWithoutModules.communities).toBeUndefined();
+    });
+
+    it('should respect numPartitions option', async () => {
+      await writeFile(join(testDir, 'a.ts'), `export const a = 1;`);
+      await writeFile(join(testDir, 'b.ts'), `export const b = 2;`);
+      await writeFile(join(testDir, 'c.ts'), `export const c = 3;`);
+
+      const analysis = await analyzeGraph(testDir, { numPartitions: 3 });
+
+      expect(analysis).toHaveProperty('boundaries');
     });
   });
 
