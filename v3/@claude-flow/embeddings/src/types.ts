@@ -175,6 +175,12 @@ export interface EmbeddingResult {
 
   /** Whether result was from cache */
   cached?: boolean;
+
+  /** Whether result was from persistent cache */
+  persistentCached?: boolean;
+
+  /** Whether embedding was normalized */
+  normalized?: boolean;
 }
 
 /**
