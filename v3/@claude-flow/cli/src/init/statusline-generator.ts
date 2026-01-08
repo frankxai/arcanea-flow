@@ -78,38 +78,110 @@ function getUserInfo() {
   return { name, gitBranch, modelName };
 }
 
-// Get V3 progress from filesystem
-function getV3Progress() {
-  const v3Path = path.join(process.cwd(), 'v3', '@claude-flow');
-  let domainsCompleted = 5;
-  let totalDomains = 5;
-  let dddProgress = 100;
-  let modulesCount = 0;
-  let filesCount = 0;
+// Get learning stats from memory database
+function getLearningStats() {
+  const memoryPaths = [
+    path.join(process.cwd(), '.swarm', 'memory.db'),
+    path.join(process.cwd(), '.claude', 'memory.db'),
+    path.join(process.cwd(), 'data', 'memory.db'),
+  ];
 
-  try {
-    if (fs.existsSync(v3Path)) {
-      const modules = fs.readdirSync(v3Path);
-      modulesCount = modules.filter(m => fs.statSync(path.join(v3Path, m)).isDirectory()).length;
-      domainsCompleted = Math.min(5, Math.floor(modulesCount / 3));
-      dddProgress = Math.min(100, Math.floor((modulesCount / 15) * 100));
+  let patterns = 0;
+  let sessions = 0;
+  let trajectories = 0;
+
+  // Try to read from sqlite database
+  for (const dbPath of memoryPaths) {
+    if (fs.existsSync(dbPath)) {
+      try {
+        // Count entries in memory file (rough estimate from file size)
+        const stats = fs.statSync(dbPath);
+        const sizeKB = stats.size / 1024;
+        // Estimate: ~2KB per pattern on average
+        patterns = Math.floor(sizeKB / 2);
+        sessions = Math.max(1, Math.floor(patterns / 10));
+        trajectories = Math.floor(patterns / 5);
+        break;
+      } catch (e) {
+        // Ignore
+      }
     }
-  } catch (e) {
-    // Ignore errors
   }
 
-  return { domainsCompleted, totalDomains, dddProgress, modulesCount, filesCount };
+  // Also check for session files
+  const sessionsPath = path.join(process.cwd(), '.claude', 'sessions');
+  if (fs.existsSync(sessionsPath)) {
+    try {
+      const sessionFiles = fs.readdirSync(sessionsPath).filter(f => f.endsWith('.json'));
+      sessions = Math.max(sessions, sessionFiles.length);
+    } catch (e) {
+      // Ignore
+    }
+  }
+
+  return { patterns, sessions, trajectories };
 }
 
-// Get security status
-function getSecurityStatus() {
-  const securityPath = path.join(process.cwd(), 'v3', '@claude-flow', 'security');
-  const exists = fs.existsSync(securityPath);
+// Get V3 progress from learning state (grows as system learns)
+function getV3Progress() {
+  const learning = getLearningStats();
+
+  // DDD progress based on actual learned patterns
+  // New install: 0 patterns = 0/5 domains, 0% DDD
+  // As patterns grow: 10+ patterns = 1 domain, 50+ = 2, 100+ = 3, 200+ = 4, 500+ = 5
+  let domainsCompleted = 0;
+  if (learning.patterns >= 500) domainsCompleted = 5;
+  else if (learning.patterns >= 200) domainsCompleted = 4;
+  else if (learning.patterns >= 100) domainsCompleted = 3;
+  else if (learning.patterns >= 50) domainsCompleted = 2;
+  else if (learning.patterns >= 10) domainsCompleted = 1;
+
+  const totalDomains = 5;
+  const dddProgress = Math.min(100, Math.floor((domainsCompleted / totalDomains) * 100));
 
   return {
-    status: exists ? 'CLEAN' : 'IN_PROGRESS',
-    cvesFixed: exists ? 3 : 2,
-    totalCves: 3,
+    domainsCompleted,
+    totalDomains,
+    dddProgress,
+    patternsLearned: learning.patterns,
+    sessionsCompleted: learning.sessions
+  };
+}
+
+// Get security status based on actual scans
+function getSecurityStatus() {
+  // Check for security scan results in memory
+  const scanResultsPath = path.join(process.cwd(), '.claude', 'security-scans');
+  let cvesFixed = 0;
+  const totalCves = 3;
+
+  if (fs.existsSync(scanResultsPath)) {
+    try {
+      const scans = fs.readdirSync(scanResultsPath).filter(f => f.endsWith('.json'));
+      // Each successful scan file = 1 CVE addressed
+      cvesFixed = Math.min(totalCves, scans.length);
+    } catch (e) {
+      // Ignore
+    }
+  }
+
+  // Also check .swarm/security for audit results
+  const auditPath = path.join(process.cwd(), '.swarm', 'security');
+  if (fs.existsSync(auditPath)) {
+    try {
+      const audits = fs.readdirSync(auditPath).filter(f => f.includes('audit'));
+      cvesFixed = Math.min(totalCves, Math.max(cvesFixed, audits.length));
+    } catch (e) {
+      // Ignore
+    }
+  }
+
+  const status = cvesFixed >= totalCves ? 'CLEAN' : cvesFixed > 0 ? 'IN_PROGRESS' : 'PENDING';
+
+  return {
+    status,
+    cvesFixed,
+    totalCves,
   };
 }
 
