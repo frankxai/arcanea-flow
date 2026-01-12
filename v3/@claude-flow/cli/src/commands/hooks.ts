@@ -787,11 +787,14 @@ const pretrainCommand: Command = {
     { command: 'claude-flow hooks pretrain --file-types ts,tsx,js', description: 'Index only TypeScript/JS files' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
-    const path = ctx.flags.path as string || '.';
+    const repoPath = ctx.flags.path as string || '.';
     const depth = ctx.flags.depth as string || 'medium';
+    const withEmbeddings = ctx.flags['with-embeddings'] !== false && ctx.flags.withEmbeddings !== false;
+    const embeddingModel = (ctx.flags['embedding-model'] || ctx.flags.embeddingModel || 'all-MiniLM-L6-v2') as string;
+    const fileTypes = (ctx.flags['file-types'] || ctx.flags.fileTypes || 'ts,js,py,md,json') as string;
 
     output.writeln();
-    output.writeln(output.bold('Pretraining Intelligence (4-Step Pipeline)'));
+    output.writeln(output.bold('Pretraining Intelligence (4-Step Pipeline + Embeddings)'));
     output.writeln();
 
     const steps = [
@@ -800,6 +803,14 @@ const pretrainCommand: Command = {
       { name: 'DISTILL', desc: 'Extract strategy memories from trajectories' },
       { name: 'CONSOLIDATE', desc: 'Dedup, detect contradictions, prune old patterns' }
     ];
+
+    // Add embedding steps if enabled
+    if (withEmbeddings) {
+      steps.push(
+        { name: 'EMBED', desc: `Index documents with ${embeddingModel} (ONNX)` },
+        { name: 'HYPERBOLIC', desc: 'Project to Poincaré ball for hierarchy preservation' }
+      );
+    }
 
     const spinner = output.createSpinner({ text: 'Starting pretraining...', spinner: 'dots' });
 
