@@ -857,7 +857,7 @@ const pretrainCommand: Command = {
       output.writeln();
 
       // Base stats
-      const tableData = [
+      const tableData: Array<{ metric: string; value: string | number }> = [
         { metric: 'Files Analyzed', value: result.stats.filesAnalyzed },
         { metric: 'Patterns Extracted', value: result.stats.patternsExtracted },
         { metric: 'Strategies Learned', value: result.stats.strategiesLearned },
