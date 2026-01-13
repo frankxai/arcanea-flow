@@ -444,7 +444,7 @@ export const neuralTools: MCPTool[] = [
 
       return {
         _realEmbeddings: !!realEmbeddings,
-        embeddingProvider: realEmbeddings ? '@claude-flow/embeddings' : 'hash-based (deterministic)',
+        embeddingProvider: realEmbeddings ? `@claude-flow/embeddings (${embeddingServiceName})` : 'hash-based (deterministic)',
         models: {
           total: models.length,
           ready: models.filter(m => m.status === 'ready').length,
