@@ -1,7 +1,7 @@
 # ADR Implementation Status Summary
 
 **Last Updated:** 2026-01-13
-**V3 Version:** 3.0.0-alpha.86
+**V3 Version:** 3.0.0-alpha.87
 **Status:** ✅ **BETA READY**
 
 ## Overall Status
