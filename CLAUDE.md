@@ -497,13 +497,12 @@ npx claude-flow@v3alpha doctor --fix
 
 ## 📦 Publishing to npm
 
-### 🚨 CRITICAL: ALWAYS PUBLISH BOTH PACKAGES TOGETHER
+### 🚨 CRITICAL: ALWAYS PUBLISH BOTH PACKAGES + UPDATE ALL TAGS
 
-**When publishing CLI changes, you MUST publish BOTH packages:**
-1. `@claude-flow/cli` - The CLI package
-2. `claude-flow` - The umbrella package (includes CLI)
-
-**NEVER publish just the CLI without the umbrella. Users use both!**
+**When publishing CLI changes, you MUST:**
+1. Publish `@claude-flow/cli`
+2. Publish `claude-flow` (umbrella)
+3. Update ALL dist-tags for BOTH packages
 
 ```bash
 # STEP 1: Build and publish CLI
@@ -513,27 +512,33 @@ npm run build
 npm publish --tag alpha
 npm dist-tag add @claude-flow/cli@3.0.0-alpha.XXX latest
 
-# STEP 2: IMMEDIATELY publish umbrella (from repo root)
+# STEP 2: Publish umbrella
 cd /workspaces/claude-flow
 npm version 3.0.0-alpha.YYY --no-git-tag-version
-npm publish --tag alpha
+npm publish --tag v3alpha
+
+# STEP 3: Update ALL umbrella tags (CRITICAL - DON'T SKIP!)
 npm dist-tag add claude-flow@3.0.0-alpha.YYY latest
+npm dist-tag add claude-flow@3.0.0-alpha.YYY alpha
 ```
 
-**Verification:**
+**Verification (MUST DO before telling user):**
 ```bash
 npm view @claude-flow/cli dist-tags --json
 npm view claude-flow dist-tags --json
-# Both should show "alpha" and "latest" pointing to newest versions
+# BOTH packages need: alpha AND latest pointing to newest version
 ```
 
-### Why Both Packages?
-| Package | Usage | Users |
-|---------|-------|-------|
-| `@claude-flow/cli` | `npx @claude-flow/cli@latest` | Direct CLI users |
-| `claude-flow` | `npx claude-flow@latest` | Umbrella users, MCP |
+### All Tags That Must Be Updated
+| Package | Tag | Command Users Run |
+|---------|-----|-------------------|
+| `@claude-flow/cli` | `alpha` | `npx @claude-flow/cli@alpha` |
+| `@claude-flow/cli` | `latest` | `npx @claude-flow/cli@latest` |
+| `claude-flow` | `alpha` | `npx claude-flow@alpha` ⚠️ EASY TO FORGET |
+| `claude-flow` | `latest` | `npx claude-flow@latest` |
+| `claude-flow` | `v3alpha` | `npx claude-flow@v3alpha` |
 
-**If you forget the umbrella, users running `npx claude-flow@latest` get stale code!**
+**The umbrella `alpha` tag is MOST commonly forgotten - users run `npx claude-flow@alpha`!**
 
 ## Support
 
