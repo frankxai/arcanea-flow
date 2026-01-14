@@ -655,18 +655,20 @@ export const hooksList: MCPTool = {
 
 export const hooksPreTask: MCPTool = {
   name: 'hooks/pre-task',
-  description: 'Record task start and get agent suggestions',
+  description: 'Record task start and get agent suggestions with intelligent model routing (ADR-026)',
   inputSchema: {
     type: 'object',
     properties: {
       taskId: { type: 'string', description: 'Task identifier' },
       description: { type: 'string', description: 'Task description' },
+      filePath: { type: 'string', description: 'Optional file path for AST analysis' },
     },
     required: ['taskId', 'description'],
   },
   handler: async (params: Record<string, unknown>) => {
     const taskId = params.taskId as string;
     const description = params.description as string;
+    const filePath = params.filePath as string | undefined;
     const suggestion = suggestAgentsForTask(description);
 
     // Determine complexity
@@ -676,6 +678,43 @@ export const hooksPreTask: MCPTool = {
       : descLower.includes('simple') || descLower.includes('fix') || description.length < 50
         ? 'low'
         : 'medium';
+
+    // Enhanced model routing with Agent Booster AST (ADR-026)
+    let modelRouting: Record<string, unknown> | undefined;
+    try {
+      const { getEnhancedModelRouter } = await import('../ruvector/enhanced-model-router.js');
+      const router = getEnhancedModelRouter();
+      const routeResult = await router.route(description, { filePath });
+
+      if (routeResult.tier === 1) {
+        // Agent Booster can handle this task
+        modelRouting = {
+          tier: 1,
+          handler: 'agent-booster',
+          canSkipLLM: true,
+          agentBoosterIntent: routeResult.agentBoosterIntent?.type,
+          intentDescription: routeResult.agentBoosterIntent?.description,
+          confidence: routeResult.confidence,
+          estimatedLatencyMs: routeResult.estimatedLatencyMs,
+          estimatedCost: routeResult.estimatedCost,
+          recommendation: `[AGENT_BOOSTER_AVAILABLE] Skip LLM - use Agent Booster for "${routeResult.agentBoosterIntent?.type}"`,
+        };
+      } else {
+        // LLM required
+        modelRouting = {
+          tier: routeResult.tier,
+          handler: routeResult.handler,
+          model: routeResult.model,
+          complexity: routeResult.complexity,
+          confidence: routeResult.confidence,
+          estimatedLatencyMs: routeResult.estimatedLatencyMs,
+          estimatedCost: routeResult.estimatedCost,
+          recommendation: `[TASK_MODEL_RECOMMENDATION] Use model="${routeResult.model}" for this task`,
+        };
+      }
+    } catch {
+      // Enhanced router not available
+    }
 
     return {
       taskId,
@@ -694,6 +733,7 @@ export const hooksPreTask: MCPTool = {
         `Use ${suggestion.agents[0]} as primary agent`,
         suggestion.agents.length > 2 ? 'Consider using swarm coordination' : 'Single agent recommended',
       ],
+      modelRouting,
       timestamp: new Date().toISOString(),
     };
   },
