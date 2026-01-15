@@ -57,7 +57,7 @@ User → MCP Server → Router → Swarm → Agents → Memory → LLM Providers
 | Coordination | Queen, Swarm, Consensus | Manages agent teams (Raft, Byzantine, Gossip) |
 | Drift Control | Hierarchical topology, Checkpoints | Prevents agents from going off-task |
 
-**Intelligence & Memory** — How the system learns and remembers
+🧠 **Intelligence & Memory** — How the system learns and remembers
 | Layer | Components | What It Does |
 |-------|------------|--------------|
 | Memory | HNSW, AgentDB, Cache | Stores and retrieves patterns 150x faster |
