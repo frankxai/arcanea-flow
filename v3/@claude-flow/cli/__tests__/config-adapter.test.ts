@@ -72,7 +72,7 @@ describe('ConfigAdapter', () => {
       expect(v3Config.projectRoot).toBe('/test/data');
       expect(v3Config.agents.maxConcurrent).toBe(10);
       expect(v3Config.agents.autoSpawn).toBe(false); // Default is false for safety
-      expect(v3Config.swarm.topology).toBe('hybrid'); // 'hierarchical-mesh' normalizes to 'hybrid'
+      expect(v3Config.swarm.topology).toBe('hierarchical-mesh'); // V3 anti-drift default
       expect(v3Config.swarm.maxAgents).toBe(15);
       expect(v3Config.memory.backend).toBe('hybrid');
       expect(v3Config.mcp.serverHost).toBe('localhost');
