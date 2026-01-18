@@ -24,6 +24,7 @@ import { DEFAULT_CONFIG } from '../types.js';
 import { TokenCounter } from './token-counter.js';
 import { TemporalCompressor } from '../temporal/compression.js';
 import { FlashAttention } from '../intelligence/attention/flash-attention.js';
+import { HyperbolicCacheIntelligence } from '../intelligence/hyperbolic-cache.js';
 
 /**
  * Generate unique ID
