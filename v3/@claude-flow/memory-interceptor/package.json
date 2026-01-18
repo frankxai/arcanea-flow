@@ -1,0 +1,30 @@
+{
+  "name": "@claude-flow/memory-interceptor",
+  "version": "3.0.0-alpha.1",
+  "description": "Intercept and redirect Claude Code memory operations to custom backends",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "memory-interceptor": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "dev": "tsx src/cli.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "better-sqlite3": "^11.0.0",
+    "sql.js": "^1.11.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@claude-flow/core": "^3.0.0-alpha"
+  }
+}
