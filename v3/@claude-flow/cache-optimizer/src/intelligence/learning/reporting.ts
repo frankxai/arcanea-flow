@@ -438,11 +438,15 @@ export class ReportGenerator {
 
   private calculateTypeBreakdown(cache: LearningMetrics['cache']): CacheReport['typeBreakdown'] {
     const breakdown: CacheReport['typeBreakdown'] = {
-      context: { count: 0, hitRate: 0, avgRelevance: 0 },
-      result: { count: 0, hitRate: 0, avgRelevance: 0 },
-      embedding: { count: 0, hitRate: 0, avgRelevance: 0 },
-      pattern: { count: 0, hitRate: 0, avgRelevance: 0 },
-      decision: { count: 0, hitRate: 0, avgRelevance: 0 },
+      system_prompt: { count: 0, hitRate: 0, avgRelevance: 0 },
+      claude_md: { count: 0, hitRate: 0, avgRelevance: 0 },
+      file_read: { count: 0, hitRate: 0, avgRelevance: 0 },
+      file_write: { count: 0, hitRate: 0, avgRelevance: 0 },
+      tool_result: { count: 0, hitRate: 0, avgRelevance: 0 },
+      bash_output: { count: 0, hitRate: 0, avgRelevance: 0 },
+      user_message: { count: 0, hitRate: 0, avgRelevance: 0 },
+      assistant_message: { count: 0, hitRate: 0, avgRelevance: 0 },
+      mcp_context: { count: 0, hitRate: 0, avgRelevance: 0 },
     };
 
     for (const type of Object.keys(breakdown) as CacheEntryType[]) {
