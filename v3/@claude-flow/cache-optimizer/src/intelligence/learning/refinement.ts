@@ -5,7 +5,6 @@
  * using Bayesian optimization and performance feedback loops.
  */
 
-import type { CacheEntry, TemporalTier } from '../../types.js';
 import type { MetricSnapshot, LearningMetrics, TimeSeriesMetric } from './measurement.js';
 
 // ============================================================================
