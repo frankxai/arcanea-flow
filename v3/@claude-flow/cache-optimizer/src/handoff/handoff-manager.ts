@@ -728,12 +728,159 @@ export class HandoffManager {
     const pricing: Record<string, { input: number; output: number }> = {
       anthropic: { input: 0.25 / 1_000_000, output: 1.25 / 1_000_000 }, // Haiku pricing
       openai: { input: 0.15 / 1_000_000, output: 0.60 / 1_000_000 }, // GPT-4o-mini pricing
+      openrouter: { input: 0.20 / 1_000_000, output: 1.00 / 1_000_000 }, // Approximate
     };
 
     const rate = pricing[provider];
     if (!rate) return 0;
 
     return inputTokens * rate.input + outputTokens * rate.output;
+  }
+
+  // =============================================================================
+  // Enhanced Feature APIs
+  // =============================================================================
+
+  /**
+   * Get circuit breaker for a provider
+   */
+  getCircuitBreaker(providerName: string): CircuitBreaker {
+    return this.circuitBreakers.get(providerName);
+  }
+
+  /**
+   * Get rate limiter for a provider
+   */
+  getRateLimiter(providerName: string): RateLimiter {
+    return this.rateLimiters.get(providerName);
+  }
+
+  /**
+   * Register a webhook
+   */
+  registerWebhook(id: string, config: { url: string; events?: string[]; secret?: string }): void {
+    this.webhooks.register(id, {
+      url: config.url,
+      events: (config.events || ['handoff.completed', 'handoff.failed']) as import('./webhook.js').WebhookEvent[],
+      secret: config.secret,
+    });
+  }
+
+  /**
+   * Unregister a webhook
+   */
+  unregisterWebhook(id: string): void {
+    this.webhooks.unregister(id);
+  }
+
+  /**
+   * Send with streaming
+   */
+  async sendStreaming(
+    request: HandoffRequest,
+    options: StreamOptions = {}
+  ): Promise<HandoffResponse> {
+    await this.initialize();
+
+    const provider = await this.selectProvider(request.provider);
+    if (!provider) {
+      return {
+        requestId: request.id,
+        provider: request.provider,
+        model: 'unknown',
+        content: '',
+        tokens: { prompt: 0, completion: 0, total: 0 },
+        durationMs: 0,
+        status: 'failed',
+        error: 'No healthy provider available',
+        completedAt: Date.now(),
+      };
+    }
+
+    const adapter = this.adapters.get(provider.type);
+    if (!adapter?.stream) {
+      // Fall back to non-streaming
+      return this.send(request);
+    }
+
+    // Check circuit breaker
+    const breaker = this.circuitBreakers.get(provider.name);
+    if (!breaker.canExecute()) {
+      return {
+        requestId: request.id,
+        provider: provider.name,
+        model: provider.model,
+        content: '',
+        tokens: { prompt: 0, completion: 0, total: 0 },
+        durationMs: 0,
+        status: 'failed',
+        error: 'Circuit breaker is open',
+        completedAt: Date.now(),
+      };
+    }
+
+    // Check rate limiter
+    const rateLimiter = this.rateLimiters.get(provider.name);
+    const rateStatus = rateLimiter.acquire();
+    if (!rateStatus.allowed) {
+      return {
+        requestId: request.id,
+        provider: provider.name,
+        model: provider.model,
+        content: '',
+        tokens: { prompt: 0, completion: 0, total: 0 },
+        durationMs: 0,
+        status: 'failed',
+        error: `Rate limited. Retry after ${rateStatus.retryAfter}ms`,
+        completedAt: Date.now(),
+      };
+    }
+
+    try {
+      const response = await adapter.stream(request, provider, options);
+
+      if (response.status === 'completed') {
+        breaker.recordSuccess();
+        rateLimiter.recordTokens(response.tokens.total);
+        await this.webhooks.trigger('handoff.completed', { requestId: request.id, response });
+      } else {
+        breaker.recordFailure();
+        await this.webhooks.trigger('handoff.failed', { requestId: request.id, error: response.error });
+      }
+
+      return response;
+    } catch (error) {
+      breaker.recordFailure(error instanceof Error ? error : undefined);
+      throw error;
+    }
+  }
+
+  /**
+   * Get persistent store for external access
+   */
+  getStore(): PersistentStore {
+    return this.persistentStore;
+  }
+
+  /**
+   * Get streaming handler
+   */
+  getStreamingHandler(): StreamingHandler {
+    return this.streaming;
+  }
+
+  /**
+   * Get all circuit breaker stats
+   */
+  getCircuitBreakerStats(): Record<string, import('./circuit-breaker.js').CircuitStats> {
+    return this.circuitBreakers.getAllStats();
+  }
+
+  /**
+   * Get all rate limiter stats
+   */
+  getRateLimiterStats(): Record<string, ReturnType<RateLimiter['getStats']>> {
+    return this.rateLimiters.getAllStats();
   }
 
   /**
