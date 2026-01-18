@@ -416,6 +416,8 @@ export class HandoffManager {
 
   /**
    * Send request to custom endpoint
+   *
+   * SECURITY: Validates endpoint URL to prevent SSRF attacks
    */
   private async sendToCustom(
     request: HandoffRequest,
@@ -437,6 +439,23 @@ export class HandoffManager {
       };
     }
 
+    // SECURITY: Validate endpoint URL to prevent SSRF
+    const allowLocal = config.options?.allowLocalEndpoint === true;
+    const urlValidation = validateEndpointUrl(config.endpoint, allowLocal);
+    if (!urlValidation.valid) {
+      return {
+        requestId: request.id,
+        provider: config.name,
+        model: config.model || 'custom',
+        content: '',
+        tokens: { prompt: 0, completion: 0, total: 0 },
+        durationMs: Date.now() - startTime,
+        status: 'failed',
+        error: `Invalid endpoint URL: ${urlValidation.error}`,
+        completedAt: Date.now(),
+      };
+    }
+
     const messages = this.buildMessages(request);
 
     // Build headers from config options
@@ -448,11 +467,23 @@ export class HandoffManager {
       headers['Authorization'] = `Bearer ${config.apiKey}`;
     }
 
-    // Add custom headers from options
+    // Add custom headers from options with SECURITY validation
     if (config.options) {
       for (const [key, value] of Object.entries(config.options)) {
         if (typeof value === 'string' && key.startsWith('header_')) {
-          headers[key.replace('header_', '')] = value;
+          const headerName = key.replace('header_', '');
+
+          // SECURITY: Validate header name and value to prevent injection
+          if (!validateHeaderName(headerName)) {
+            console.warn(`Skipping invalid header name: ${headerName}`);
+            continue;
+          }
+          if (!validateHeaderValue(value)) {
+            console.warn(`Skipping header with invalid value: ${headerName}`);
+            continue;
+          }
+
+          headers[headerName] = value;
         }
       }
     }
