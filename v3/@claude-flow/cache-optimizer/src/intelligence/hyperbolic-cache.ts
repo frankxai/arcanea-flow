@@ -8,7 +8,7 @@
  * 4. Predict optimal eviction using geometric distance from origin
  */
 
-import type { CacheEntry, CacheEntryType, RelevanceScore } from '../types.js';
+import type { CacheEntry, CacheEntryType } from '../types.js';
 
 // ============================================================================
 // Hyperbolic Geometry (Poincaré Ball Model)
