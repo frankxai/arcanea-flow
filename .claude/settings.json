@@ -253,6 +253,21 @@
             "type": "command",
             "timeout": 4000,
             "command": "node /workspaces/claude-flow/v3/@claude-flow/cli/bin/cli.js hooks post-task --task-id \"task-$(date +%s)\" --description \"$TOOL_INPUT_prompt\" --success true --train-patterns true --update-metrics true 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "timeout": 2000,
+            "command": "/workspaces/claude-flow/.claude/helpers/cache-optimizer-hooks.sh record add \"task-$(date +%s)\" task_complete '{}' 2>/dev/null || true"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 2000,
+            "command": "/workspaces/claude-flow/.claude/helpers/cache-optimizer-hooks.sh record access \"read-$(date +%s)\" file_read '{}' 2>/dev/null || true"
           }
         ]
       }
