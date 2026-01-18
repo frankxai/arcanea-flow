@@ -1,6 +1,7 @@
 #!/bin/bash
 # Claude Flow V3 - Cache Optimizer with GNN/GRNN Intelligence
 # Integrates cache-optimizer with GNN/GRNN self-learning capabilities
+# Cross-platform compatible: Linux, macOS, Windows (Git Bash/WSL)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -11,6 +12,36 @@ GNN_DIR="$PROJECT_ROOT/.claude-flow/gnn"
 
 # Ensure directories exist
 mkdir -p "$METRICS_DIR" "$CACHE_DIR" "$GNN_DIR"
+
+# =============================================================================
+# Cross-Platform Date Functions
+# =============================================================================
+# ISO 8601 date (works on Linux, macOS, Windows Git Bash)
+get_iso_date() {
+  if date -Iseconds >/dev/null 2>&1; then
+    # GNU date (Linux, Windows Git Bash)
+    date -Iseconds
+  else
+    # BSD date (macOS)
+    date -u +"%Y-%m-%dT%H:%M:%S+00:00"
+  fi
+}
+
+# Timestamp in milliseconds (works on Linux, macOS, Windows Git Bash)
+get_timestamp_ms() {
+  if date +%s%3N 2>/dev/null | grep -qE '^[0-9]+$'; then
+    # GNU date with milliseconds
+    date +%s%3N
+  elif command -v python3 >/dev/null 2>&1; then
+    # Python fallback (macOS, any platform)
+    python3 -c 'import time; print(int(time.time() * 1000))'
+  elif command -v python >/dev/null 2>&1; then
+    python -c 'import time; print(int(time.time() * 1000))'
+  else
+    # Seconds only fallback
+    echo "$(date +%s)000"
+  fi
+}
 
 # Colors
 GREEN='\033[0;32m'
