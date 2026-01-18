@@ -509,6 +509,11 @@
         "hooks": [
           {
             "type": "command",
+            "timeout": 5000,
+            "command": "node /workspaces/claude-flow/v3/@claude-flow/cache-optimizer/dist/bin/cache-optimizer.js prevent-compact auto 2>&1 || true"
+          },
+          {
+            "type": "command",
             "command": "/bin/bash -c 'echo \"🔄 Auto-Compact Guidance (Context Window Full):\"; echo \"📋 CRITICAL: Before compacting, ensure you understand:\"; echo \"   • All 54 agents available in .claude/agents/ directory\"; echo \"   • Concurrent execution patterns from CLAUDE.md\"; echo \"   • Batchtools optimization for 300% performance gains\"; echo \"   • Swarm coordination strategies for complex tasks\"; echo \"⚡ Apply GOLDEN RULE: Always batch operations in single messages\"; echo \"✅ Auto-compact proceeding with full agent context\"'"
           },
           {
