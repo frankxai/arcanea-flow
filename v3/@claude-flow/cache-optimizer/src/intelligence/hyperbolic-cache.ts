@@ -792,7 +792,7 @@ export class HyperbolicCacheIntelligence {
     const typeRadius = typeWeights[entry.type] ?? 0.5;
 
     // Age pushes entry toward periphery
-    const age = Date.now() - entry.createdAt;
+    const age = Date.now() - entry.timestamp;
     const ageRadius = Math.min(age / (60 * 60 * 1000), 0.3); // Max 0.3 from age
 
     // Low relevance pushes toward periphery
