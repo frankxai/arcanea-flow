@@ -19,6 +19,11 @@ import type {
   HandoffMetrics,
   HandoffContext,
 } from '../types.js';
+import { CircuitBreakerRegistry, type CircuitBreaker } from './circuit-breaker.js';
+import { RateLimiterRegistry, type RateLimiter } from './rate-limiter.js';
+import { PersistentStore, createPersistentStore } from './persistent-store.js';
+import { WebhookHandler, createWebhookHandler } from './webhook.js';
+import { StreamingHandler, createStreamingHandler, type StreamOptions } from './streaming.js';
 
 // Re-export default config from types
 export { DEFAULT_HANDOFF_CONFIG } from '../types.js';
@@ -30,6 +35,7 @@ interface ProviderAdapter {
   name: string;
   healthCheck: () => Promise<boolean>;
   send: (request: HandoffRequest, config: HandoffProviderConfig) => Promise<HandoffResponse>;
+  stream?: (request: HandoffRequest, config: HandoffProviderConfig, options: StreamOptions) => Promise<HandoffResponse>;
 }
 
 /**
