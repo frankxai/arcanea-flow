@@ -235,7 +235,7 @@ export class CacheGNN {
       activation: config.activation ?? 'gelu',
     };
 
-    this._learningRate = 0.01;
+    this.learningRate = 0.01;
     this.graph = {
       nodes: new Map(),
       edges: [],
