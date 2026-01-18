@@ -131,6 +131,8 @@ export {
   type InitResult,
   type ProfileId,
   type Profile,
+  type ProfileCacheConfig,
+  type ProfileHandoffConfig,
   type HookConfiguration,
   type HookEntry,
   type ClaudeSettings,
