@@ -722,7 +722,7 @@ export class GraphBuilder {
 
   private pruneEdges(
     edges: CacheEdge[],
-    adjacency: Map<string, Set<string>>
+    _adjacency: Map<string, Set<string>>
   ): CacheEdge[] {
     // Sort by weight descending
     const sorted = [...edges].sort((a, b) => b.weight - a.weight);
