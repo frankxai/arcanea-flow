@@ -132,7 +132,7 @@ record_event() {
   local entry_type="$3"    # file_read, tool_result, etc.
   local metadata="$4"
 
-  local timestamp=$(date +%s%3N)
+  local timestamp=$(get_timestamp_ms)
 
   # Append to event log for GNN training
   local event_log="$GNN_DIR/events.jsonl"
