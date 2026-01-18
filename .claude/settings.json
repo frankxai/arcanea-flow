@@ -268,6 +268,11 @@
             "type": "command",
             "timeout": 2000,
             "command": "/workspaces/claude-flow/.claude/helpers/cache-optimizer-hooks.sh record access \"read-$(date +%s)\" file_read '{}' 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "timeout": 3000,
+            "command": "node /workspaces/claude-flow/v3/@claude-flow/cache-optimizer/dist/bin/cache-optimizer.js post-tool Read 2>/dev/null || true"
           }
         ]
       }
