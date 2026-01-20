@@ -1355,7 +1355,7 @@ npx claude-flow@v3alpha worker status
 | `init` | 4 | Project initialization (wizard, check, skills, hooks) |
 | `agent` | 8 | Agent lifecycle (spawn, list, status, stop, metrics, pool, health, logs) |
 | `swarm` | 6 | Swarm coordination (init, start, status, stop, scale, coordinate) |
-| `memory` | 11 | Memory operations (store, retrieve, search, list, delete, stats, configure, cleanup, compress, export, import) |
+| `memory` | 12 | Memory operations (init, store, retrieve, search --build-hnsw, list, delete, stats, configure, cleanup, compress, export, import) |
 | `mcp` | 9 | MCP server (start, stop, status, health, restart, tools, toggle, exec, logs) |
 | `task` | 6 | Task management (create, list, status, cancel, assign, retry) |
 | `session` | 7 | Session management (list, save, restore, delete, export, import, current) |
