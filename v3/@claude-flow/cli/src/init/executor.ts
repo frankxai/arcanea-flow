@@ -274,7 +274,17 @@ export async function executeUpgrade(targetDir: string): Promise<UpgradeResult> 
 
     // 1. ALWAYS update statusline helper (force overwrite)
     const statuslinePath = path.join(targetDir, '.claude', 'helpers', 'statusline.cjs');
-    const statuslineContent = generateStatuslineScript({ refreshInterval: 5000 });
+    // Use default options with statusline config
+    const upgradeOptions: InitOptions = {
+      ...DEFAULT_INIT_OPTIONS,
+      targetDir,
+      force: true,
+      statusline: {
+        ...DEFAULT_INIT_OPTIONS.statusline,
+        refreshInterval: 5000,
+      },
+    };
+    const statuslineContent = generateStatuslineScript(upgradeOptions);
 
     if (fs.existsSync(statuslinePath)) {
       result.updated.push('.claude/helpers/statusline.cjs');
