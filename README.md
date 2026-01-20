@@ -3233,7 +3233,7 @@ await hooks.endTrajectory(trajectory, { success: true });
 ---
 
 <details>
-<summary><h2>⚡ Agentic-Flow Integration — Core AI Infrastructure</h2></summary>
+<summary>⚡ <strong>Agentic-Flow Integration</strong> — Core AI Infrastructure</summary>
 
 [![npm version](https://img.shields.io/npm/v/agentic-flow?color=blue&label=npm)](https://www.npmjs.com/package/agentic-flow)
 [![npm downloads](https://img.shields.io/npm/dm/agentic-flow?color=green)](https://www.npmjs.com/package/agentic-flow)
