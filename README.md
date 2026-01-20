@@ -5784,6 +5784,7 @@ cp -r ./data-backup-v2 ./data
 | `@claude-flow/performance` | Benchmarking & optimization | [Source](./v3/@claude-flow/performance/) |
 | `@claude-flow/deployment` | Release & CI/CD | [Source](./v3/@claude-flow/deployment/) |
 | `@claude-flow/shared` | Shared utilities, types & V3ProgressService | [Source](./v3/@claude-flow/shared/) |
+| `@claude-flow/browser` | AI-optimized browser automation with agent-browser | [README](./v3/@claude-flow/browser/README.md) |
 
 ### Additional Resources
 
