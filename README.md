@@ -701,8 +701,6 @@ Claude-Flow runs as an MCP (Model Context Protocol) server, allowing you to conn
 npx claude-flow@v3alpha mcp start
 ```
 
----
-
 <details open>
 <summary>🖥️ <strong>Claude Desktop</strong></summary>
 
