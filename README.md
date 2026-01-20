@@ -686,7 +686,7 @@ flowchart TB
 ---
 
 <details>
-<summary><h2>🔌 MCP Setup — Connect Claude-Flow to Any AI Environment</h2></summary>
+<summary>🔌 <strong>MCP Setup</strong> — Connect Claude-Flow to Any AI Environment</summary>
 
 Claude-Flow runs as an MCP (Model Context Protocol) server, allowing you to connect it to any MCP-compatible AI client. This means you can use Claude-Flow's 54+ agents, swarm coordination, and self-learning capabilities from Claude Desktop, VS Code, Cursor, Windsurf, ChatGPT, and more.
 
