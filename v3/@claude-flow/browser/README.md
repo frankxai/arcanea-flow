@@ -671,7 +671,7 @@ async function secureAutomation(url: string, formData: Record<string, string>) {
 ---
 
 <details>
-<summary><h2>🔧 Troubleshooting</h2></summary>
+<summary><strong>🔧 Troubleshooting</strong></summary>
 
 ### Common Issues
 
