@@ -246,15 +246,15 @@ export class AgentBrowserAdapter {
   // ===========================================================================
 
   async isVisible(target: string): Promise<ActionResult<boolean>> {
-    return this.exec(['is', 'visible', target]);
+    return this.exec<boolean>(['is', 'visible', target]);
   }
 
   async isEnabled(target: string): Promise<ActionResult<boolean>> {
-    return this.exec(['is', 'enabled', target]);
+    return this.exec<boolean>(['is', 'enabled', target]);
   }
 
   async isChecked(target: string): Promise<ActionResult<boolean>> {
-    return this.exec(['is', 'checked', target]);
+    return this.exec<boolean>(['is', 'checked', target]);
   }
 
   // ===========================================================================
