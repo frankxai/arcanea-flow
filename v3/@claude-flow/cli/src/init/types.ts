@@ -409,6 +409,7 @@ export const MINIMAL_INIT_OPTIONS: InitOptions = {
     agentdb: false,
     github: false,
     flowNexus: false,
+    browser: false,
     v3: false,
     all: false,
   },
