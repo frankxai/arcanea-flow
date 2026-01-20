@@ -395,6 +395,8 @@ function getADRStatus() {
     path.join(process.cwd(), 'adr'),
     path.join(process.cwd(), 'ADR'),
     path.join(process.cwd(), '.claude-flow', 'adrs'),
+    path.join(process.cwd(), 'v3', 'implementation', 'adrs'),
+    path.join(process.cwd(), 'implementation', 'adrs'),
   ];
 
   let count = 0;

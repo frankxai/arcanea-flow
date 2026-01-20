@@ -468,12 +468,15 @@ function getHooksStatus() {
       try {
         const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
         if (settings.hooks) {
-          // Count enabled hooks
-          const hookTypes = Object.keys(settings.hooks);
-          enabled = hookTypes.filter(h => {
-            const hook = settings.hooks[h];
-            return hook && (hook.enabled !== false) && (hook.command || hook.script);
-          }).length;
+          // Claude Code native hooks format: PreToolUse, PostToolUse, SessionStart, etc.
+          const hookCategories = Object.keys(settings.hooks);
+          for (const category of hookCategories) {
+            const categoryHooks = settings.hooks[category];
+            if (Array.isArray(categoryHooks) && categoryHooks.length > 0) {
+              // Count categories with at least one hook defined
+              enabled++;
+            }
+          }
         }
         break;
       } catch (e) {
