@@ -10,7 +10,7 @@ import type { InitOptions, StatuslineConfig } from './types.js';
  * Matches the advanced format:
  * ▊ Claude Flow V3 ● user  │  ⎇ v3  │  Opus 4.5
  * ─────────────────────────────────────────────────────
- * 🏗️  DDD Domains    [●●●●●]  5/5    ⚡ 1.0x → 2.49x-7.47x
+ * 🏗️  DDD Domains    [●●●●●]  5/5    ⚡ HNSW 12500x (or 📚 22.9k patterns)
  * 🤖 Swarm  ◉ [12/15]  👥 0    🟢 CVE 3/3    💾 5177MB    📂  56%    🧠  30%
  * 🔧 Architecture    DDD ●100%  │  Security ●CLEAN  │  Memory ●AgentDB  │  Integration ●
  */
