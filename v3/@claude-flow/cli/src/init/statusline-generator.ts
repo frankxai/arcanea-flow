@@ -771,18 +771,22 @@ function getTestStats() {
   return { testFiles, testCases };
 }
 
-// Get git status (uncommitted changes, untracked files)
+// Get git status (uncommitted changes, untracked files) - cross-platform
 function getGitStatus() {
   let modified = 0;
   let untracked = 0;
   let staged = 0;
-  let branch = '';
   let ahead = 0;
   let behind = 0;
+  const isWindows = process.platform === 'win32';
 
   try {
-    // Get modified and staged counts
-    const status = execSync('git status --porcelain 2>/dev/null || echo ""', { encoding: 'utf-8' });
+    // Get modified and staged counts - works on all platforms
+    const status = execSync('git status --porcelain', {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe'], // Suppress stderr
+      timeout: 5000,
+    });
     const lines = status.trim().split('\\n').filter(l => l);
     for (const line of lines) {
       const code = line.substring(0, 2);
@@ -794,16 +798,20 @@ function getGitStatus() {
       if (code.includes('A')) staged++;
     }
 
-    // Get ahead/behind
+    // Get ahead/behind - may fail if no upstream
     try {
-      const abStatus = execSync('git rev-list --left-right --count HEAD...@{upstream} 2>/dev/null || echo "0 0"', { encoding: 'utf-8' });
-      const [a, b] = abStatus.trim().split(/\\s+/).map(n => parseInt(n) || 0);
-      ahead = a;
-      behind = b;
-    } catch (e) { /* no upstream */ }
+      const abStatus = execSync('git rev-list --left-right --count HEAD...@{upstream}', {
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+        timeout: 5000,
+      });
+      const parts = abStatus.trim().split(/\\s+/);
+      ahead = parseInt(parts[0]) || 0;
+      behind = parseInt(parts[1]) || 0;
+    } catch (e) { /* no upstream or error - that's ok */ }
 
   } catch (e) {
-    // Not a git repo or error
+    // Not a git repo or git not installed - return zeros
   }
 
   return { modified, untracked, staged, ahead, behind };
