@@ -116,9 +116,9 @@ export class BrowserService {
   }
 
   /**
-   * End trajectory and return for learning
+   * End trajectory and return for learning (also stores in memory)
    */
-  endTrajectory(success: boolean, verdict?: string): BrowserTrajectory | null {
+  async endTrajectory(success: boolean, verdict?: string): Promise<BrowserTrajectory | null> {
     if (!this.currentTrajectory) return null;
 
     const trajectory = activeTrajectories.get(this.currentTrajectory);
@@ -130,6 +130,11 @@ export class BrowserService {
       success,
       verdict,
     };
+
+    // Store in memory for learning
+    if (this.memoryManager) {
+      await this.memoryManager.storeTrajectory(completed);
+    }
 
     activeTrajectories.delete(this.currentTrajectory);
     this.currentTrajectory = undefined;
