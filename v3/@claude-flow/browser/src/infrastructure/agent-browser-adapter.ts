@@ -210,35 +210,35 @@ export class AgentBrowserAdapter {
   }
 
   async getText(target: string): Promise<ActionResult<string>> {
-    return this.exec(['get', 'text', target]);
+    return this.exec<string>(['get', 'text', target]);
   }
 
   async getHtml(target: string): Promise<ActionResult<string>> {
-    return this.exec(['get', 'html', target]);
+    return this.exec<string>(['get', 'html', target]);
   }
 
   async getValue(target: string): Promise<ActionResult<string>> {
-    return this.exec(['get', 'value', target]);
+    return this.exec<string>(['get', 'value', target]);
   }
 
   async getAttr(target: string, attribute: string): Promise<ActionResult<string>> {
-    return this.exec(['get', 'attr', target, attribute]);
+    return this.exec<string>(['get', 'attr', target, attribute]);
   }
 
   async getTitle(): Promise<ActionResult<string>> {
-    return this.exec(['get', 'title']);
+    return this.exec<string>(['get', 'title']);
   }
 
   async getUrl(): Promise<ActionResult<string>> {
-    return this.exec(['get', 'url']);
+    return this.exec<string>(['get', 'url']);
   }
 
   async getCount(selector: string): Promise<ActionResult<number>> {
-    return this.exec(['get', 'count', selector]);
+    return this.exec<number>(['get', 'count', selector]);
   }
 
   async getBox(target: string): Promise<ActionResult<{ x: number; y: number; width: number; height: number }>> {
-    return this.exec(['get', 'box', target]);
+    return this.exec<{ x: number; y: number; width: number; height: number }>(['get', 'box', target]);
   }
 
   // ===========================================================================
