@@ -2157,7 +2157,7 @@ npx claude-flow@v3alpha hooks worker dispatch --trigger audit
 ---
 
 <details>
-<summary><h2>📦 Pattern Store & Export — Share Patterns, Import Config </h2></summary>
+<summary>📦 <strong>Pattern Store & Export</strong> — Share Patterns, Import Config</summary>
 
 Share learned patterns across projects, teams, and the community via the decentralized pattern marketplace.
 
