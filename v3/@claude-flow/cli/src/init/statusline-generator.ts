@@ -320,16 +320,46 @@ function getSwarmStatus() {
   };
 }
 
-// Get system metrics (dynamic based on actual state)
+// Get system metrics (cross-platform)
 function getSystemMetrics() {
   let memoryMB = 0;
   let subAgents = 0;
 
+  // Check learning.json first (works on all platforms)
+  const learningMetricsPath = path.join(process.cwd(), '.claude-flow', 'metrics', 'learning.json');
+  let intelligenceFromFile = null;
+  let contextFromFile = null;
+  if (fs.existsSync(learningMetricsPath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(learningMetricsPath, 'utf-8'));
+      if (data.routing?.accuracy !== undefined) {
+        intelligenceFromFile = Math.min(100, Math.floor(data.routing.accuracy));
+      }
+      if (data.sessions?.total !== undefined) {
+        contextFromFile = Math.min(100, data.sessions.total * 5);
+      }
+    } catch (e) {
+      // Fall through
+    }
+  }
+
+  // Platform-specific memory detection
+  const isWindows = process.platform === 'win32';
   try {
-    const mem = execSync('ps aux | grep -E "(node|agentic|claude)" | grep -v grep | awk \\'{sum += \\$6} END {print int(sum/1024)}\\'', { encoding: 'utf-8' });
-    memoryMB = parseInt(mem.trim()) || 0;
+    if (isWindows) {
+      // Windows: use process.memoryUsage() (most reliable cross-platform)
+      memoryMB = Math.floor(process.memoryUsage().heapUsed / 1024 / 1024);
+    } else {
+      // Unix: try ps command, fallback to process.memoryUsage()
+      try {
+        const mem = execSync('ps aux | grep -E "(node|agentic|claude)" | grep -v grep | awk \\'{sum += \\$6} END {print int(sum/1024)}\\'', { encoding: 'utf-8' });
+        memoryMB = parseInt(mem.trim()) || 0;
+      } catch (e) {
+        memoryMB = Math.floor(process.memoryUsage().heapUsed / 1024 / 1024);
+      }
+    }
   } catch (e) {
-    // Fallback
+    // Fallback to Node.js memory API
     memoryMB = Math.floor(process.memoryUsage().heapUsed / 1024 / 1024);
   }
 
@@ -337,17 +367,34 @@ function getSystemMetrics() {
   const learning = getLearningStats();
 
   // Intelligence % based on learned patterns (0 patterns = 0%, 1000+ = 100%)
-  const intelligencePct = Math.min(100, Math.floor((learning.patterns / 10) * 1));
+  const intelligencePct = intelligenceFromFile !== null
+    ? intelligenceFromFile
+    : Math.min(100, Math.floor((learning.patterns / 10) * 1));
 
   // Context % based on session history (0 sessions = 0%, grows with usage)
-  const contextPct = Math.min(100, Math.floor(learning.sessions * 5));
+  const contextPct = contextFromFile !== null
+    ? contextFromFile
+    : Math.min(100, Math.floor(learning.sessions * 5));
 
-  // Count active sub-agents from process list
-  try {
-    const agents = execSync('ps aux 2>/dev/null | grep -c "claude-flow.*agent" || echo "0"', { encoding: 'utf-8' });
-    subAgents = Math.max(0, parseInt(agents.trim()) - 1);
-  } catch (e) {
-    // Ignore
+  // Count active sub-agents (cross-platform via metrics file)
+  const activityPath = path.join(process.cwd(), '.claude-flow', 'metrics', 'swarm-activity.json');
+  if (fs.existsSync(activityPath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(activityPath, 'utf-8'));
+      subAgents = data.processes?.estimated_agents || 0;
+    } catch (e) {
+      // Ignore
+    }
+  }
+
+  // Fallback to process detection on Unix only
+  if (subAgents === 0 && !isWindows) {
+    try {
+      const agents = execSync('ps aux 2>/dev/null | grep -c "claude-flow.*agent" || echo "0"', { encoding: 'utf-8' });
+      subAgents = Math.max(0, parseInt(agents.trim()) - 1);
+    } catch (e) {
+      // Ignore
+    }
   }
 
   return {
