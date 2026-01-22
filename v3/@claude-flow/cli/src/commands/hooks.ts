@@ -451,7 +451,7 @@ const postCommandCommand: Command = {
         };
       }>('hooks/post-command', {
         command,
-        success,
+        success: successValue,
         exitCode: ctx.flags.exitCode || 0,
         duration: ctx.flags.duration,
         timestamp: Date.now(),
