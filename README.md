@@ -1,3 +1,12 @@
+<!-- ARCANEA -->
+> **Arcanea Flow** — Multi-agent orchestration for creative universe builders.
+> Guardian swarm coordination, Living Intelligence, MIT licensed.
+>
+> Part of the [Arcanea](https://arcanea.ai) ecosystem — the living mythology for the age of AI-human co-creation.
+> Ten Guardian agents. Context that compounds. Build your universe.
+
+---
+
 # Claude-Flow v3: Enterprise AI Orchestration Platform
 
 <div align="center">
