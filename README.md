@@ -6042,6 +6042,23 @@ cp -r ./data-backup-v2 ./data
 | 💼 Professional Implementation | [ruv.io](https://ruv.io) — Enterprise consulting, custom integrations, and production deployment |
 | 💬 Discord Community | [Agentics Foundation](https://discord.com/invite/dfxmpwkG2D) |
 
+## Arcanea Ecosystem
+
+Arcanea Flow is the orchestration engine powering the [Arcanea](https://arcanea.ai) universe — a living mythology for the age of AI-human co-creation.
+
+| Project | Purpose |
+|---------|---------|
+| [arcanea.ai](https://arcanea.ai) | The Arcanea platform — Prompt Books, Guardian AI, universe building tools |
+| [Arcanea Monorepo](https://github.com/frankxai/Arcanea) | Core SDK, CLI, MCP server, and the arcanea.ai web app |
+| [Arcanea Realm](https://github.com/frankxai/arcanea-realm) | AI CLI with ten Guardian agents (OpenCode fork) |
+| [Arcanea Vault](https://github.com/frankxai/arcanea-vault) | Chrome extension — export AI conversations, images, and prompts from any platform |
+| [Arcanea On-Chain](https://github.com/frankxai/arcanea-onchain) | Blockchain IP and creator economy infrastructure (Story Protocol, Solana, Base) |
+| [Starlight Intelligence System](https://github.com/frankxai/Starlight-Intelligence-System) | Persistent context and memory layer for AI agents |
+
+Arcanea Flow provides the Guardian swarm coordination layer: ten specialized agents aligned with the Ten Gates of Arcanea, each with distinct domain expertise and elemental affinity.
+
+---
+
 ## License
 
 MIT - [RuvNet](https://github.com/ruvnet)
