@@ -9,7 +9,7 @@
   },
   "keywords": ["rest", "api", "simple", "example"],
   "author": "",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "express": "^4.18.2"
   },

@@ -26,11 +26,12 @@
     "baseUrl": "."
   },
   "include": [
-    "v3/**/*.ts"
+    "v3/@arcanea-flow/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "dist",
+    "v3/@claude-flow/**",
     "**/*.test.ts",
     "**/*.bench.ts",
     "v3/__tests__/**/*.ts"

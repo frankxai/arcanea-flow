@@ -15,7 +15,7 @@
     "claude-flow"
   ],
   "author": "Claude Flow Swarm",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "express": "^4.18.2"
   },

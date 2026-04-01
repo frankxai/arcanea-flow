@@ -11,7 +11,7 @@
     "claude-flow"
   ],
   "author": "Claude Flow Swarm",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "swarmMetadata": {
     "swarmId": "swarm_4vss8ckrh_ps9ptpmzk",
     "objective": "build a real-time chat application with websockets and message history in ./examples/chat-app",

@@ -13,7 +13,7 @@
   },
   "keywords": ["notes", "cli", "productivity", "swarm", "claude-flow"],
   "author": "Claude Flow Swarm",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^11.1.0"

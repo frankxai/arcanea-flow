@@ -10,7 +10,7 @@
   },
   "keywords": ["claude-flow", "swarm", "dashboard", "websocket", "browser"],
   "author": "",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "ws": "^8.18.0"
   }

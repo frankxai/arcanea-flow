@@ -9,7 +9,7 @@
   },
   "keywords": ["hello", "world", "example"],
   "author": "",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "bin": {
     "hello2": "./index.js"
   }
