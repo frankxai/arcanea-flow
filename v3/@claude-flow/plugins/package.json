@@ -86,7 +86,7 @@
     "neural-adaptation"
   ],
   "author": "Claude Flow Team",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "engines": {
     "node": ">=20.0.0"
   },

@@ -41,7 +41,7 @@
     "failover"
   ],
   "author": "Claude Flow Team",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "events": "^3.3.0"
   },
