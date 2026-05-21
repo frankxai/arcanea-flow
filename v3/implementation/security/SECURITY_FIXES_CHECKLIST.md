@@ -88,7 +88,7 @@ npm run test -- auth-service.test
 private initializeDefaultUsers(): void {
   const adminUser: User = {
     id: 'admin_default',
-    email: 'admin@claude-flow.local',
+    email: 'admin@arcanea-flow.local',
     passwordHash: createHash('sha256').update('admin123' + 'salt').digest('hex'),
     // ...
   };
@@ -108,7 +108,7 @@ private async initializeDefaultUsers(): Promise<void> {
     console.log('IMPORTANT: SAVE THESE CREDENTIALS NOW');
     console.log('═══════════════════════════════════════════');
     console.log('Default Admin Credentials:');
-    console.log(`Email: admin@claude-flow.local`);
+    console.log(`Email: admin@arcanea-flow.local`);
     console.log(`Password: ${randomPassword}`);
     console.log('═══════════════════════════════════════════');
     console.log('You will NOT see this password again!');
@@ -117,7 +117,7 @@ private async initializeDefaultUsers(): Promise<void> {
 
     const adminUser: User = {
       id: 'admin_default',
-      email: 'admin@claude-flow.local',
+      email: 'admin@arcanea-flow.local',
       passwordHash: await this.hashPassword(randomPassword),
       role: 'admin',
       permissions: ROLE_PERMISSIONS.admin,
@@ -231,11 +231,11 @@ async function executeHook(hookType: string, options: Record<string, any>): Prom
 **Verification:**
 ```bash
 # Should fail with error
-claude-flow hook pre-task --description "test; whoami"
-claude-flow hook pre-task --description "test && ls"
+arcanea-flow hook pre-task --description "test; whoami"
+arcanea-flow hook pre-task --description "test && ls"
 
 # Should succeed
-claude-flow hook pre-task --description "legitimate task description"
+arcanea-flow hook pre-task --description "legitimate task description"
 ```
 
 ---
@@ -311,7 +311,7 @@ export class PathValidator {
 
 export const defaultPathValidator = new PathValidator([
   process.cwd(),
-  join(process.cwd(), '.claude-flow'),
+  join(process.cwd(), '.arcanea-flow'),
   join(process.cwd(), 'workflows'),
 ]);
 ```
@@ -339,13 +339,13 @@ import { defaultPathValidator } from '../../utils/path-validator.js';
 **Verification:**
 ```bash
 # Should fail
-claude-flow task workflow ../../../etc/passwd
-claude-flow task workflow ~/.ssh/id_rsa
-claude-flow task workflow /etc/hosts
+arcanea-flow task workflow ../../../etc/passwd
+arcanea-flow task workflow ~/.ssh/id_rsa
+arcanea-flow task workflow /etc/hosts
 
 # Should succeed
-claude-flow task workflow ./workflows/my-workflow.json
-claude-flow task workflow workflows/test.json
+arcanea-flow task workflow ./workflows/my-workflow.json
+arcanea-flow task workflow workflows/test.json
 ```
 
 ---
@@ -436,13 +436,13 @@ const PROTECTED_KEYS = [
 **Verification:**
 ```bash
 # Should fail
-claude-flow config set "authConfig.jwtSecret" "hacked"
-claude-flow config set "__proto__.isAdmin" "true"
-claude-flow config set "timeout" "999999999"
+arcanea-flow config set "authConfig.jwtSecret" "hacked"
+arcanea-flow config set "__proto__.isAdmin" "true"
+arcanea-flow config set "timeout" "999999999"
 
 # Should succeed
-claude-flow config set "theme" "dark"
-claude-flow config set "timeout" "30000"
+arcanea-flow config set "theme" "dark"
+arcanea-flow config set "timeout" "30000"
 ```
 
 ---

@@ -15,7 +15,7 @@
  *   --tools <list>      Comma-separated tool list or "all" (default: all)
  *   --log-level <level> Log level: debug, info, warn, error (default: info)
  *
- * @module @claude-flow/mcp/server-entry
+ * @module @arcanea-flow/mcp/server-entry
  * @version 3.0.0
  */
 

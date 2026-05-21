@@ -609,9 +609,9 @@ export class InitController {
       '.claude/commands',
       '.claude/skills',
       '.claude/checkpoints/active',
-      '.claude-flow/coordination',
-      '.claude-flow/training',
-      '.claude-flow/metrics'
+      '.arcanea-flow/coordination',
+      '.arcanea-flow/training',
+      '.arcanea-flow/metrics'
     ];
 
     for (const dir of dirs) {
@@ -956,21 +956,21 @@ npm run test:compatibility
 
 ```bash
 # Fresh v3 installation
-npx claude-flow init --mode sparc --sona research
+npx arcanea-flow init --mode sparc --sona research
 
 # With all features
-npx claude-flow init --mode enterprise --sona research --attention flash
+npx arcanea-flow init --mode enterprise --sona research --attention flash
 
 # Minimal (fast startup)
-npx claude-flow init --mode standard --sona real-time
+npx arcanea-flow init --mode standard --sona real-time
 
 # Migrate from v2
-npx claude-flow init --migrate
+npx arcanea-flow init --migrate
 ```
 
 ```typescript
 // v3 API usage
-import { InitController, SwarmCoordinator, SONAManager } from 'claude-flow/v3';
+import { InitController, SwarmCoordinator, SONAManager } from 'arcanea-flow/v3';
 
 // Initialize with learning
 const init = new InitController({

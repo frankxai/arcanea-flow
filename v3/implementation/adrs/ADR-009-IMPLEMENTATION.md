@@ -81,7 +81,7 @@ Comprehensive test suite covering:
 ### Basic Hybrid Backend
 
 ```typescript
-import { HybridBackend } from '@claude-flow/memory';
+import { HybridBackend } from '@arcanea-flow/memory';
 
 const backend = new HybridBackend({
   sqlite: {
@@ -306,7 +306,7 @@ console.log('Recommendations:', health.recommendations);
 For existing systems using only AgentDB:
 
 ```typescript
-import { HybridBackend, AgentDBAdapter } from '@claude-flow/memory';
+import { HybridBackend, AgentDBAdapter } from '@arcanea-flow/memory';
 
 // Old: AgentDB only
 const oldBackend = new AgentDBAdapter(config);
@@ -326,7 +326,7 @@ const newBackend = new HybridBackend({
 Run the comprehensive test suite:
 
 ```bash
-cd /workspaces/claude-flow/v3/@claude-flow/memory
+cd /workspaces/arcanea-flow/v3/@arcanea-flow/memory
 npm test src/hybrid-backend.test.ts
 ```
 
@@ -395,7 +395,7 @@ Test coverage includes:
    - Query routing: <0.1ms overhead
 
 ### Package Versions
-- `@claude-flow/memory@3.0.0-alpha.2`
+- `@arcanea-flow/memory@3.0.0-alpha.2`
 
 ---
 

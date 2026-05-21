@@ -130,7 +130,7 @@ All ADRs consider security:
 
 ### Recent Updates (2026-01-13)
 
-#### Release: @claude-flow/cli@3.0.0-alpha.84 (Beta Ready)
+#### Release: @arcanea-flow/cli@3.0.0-alpha.84 (Beta Ready)
 
 **All Audit Issues Resolved:**
 
@@ -142,17 +142,17 @@ All ADRs consider security:
 
 **Auto-Update System (ADR-025):**
 ```bash
-npx claude-flow update check      # Check for updates
-npx claude-flow update all        # Update all packages
-npx claude-flow update history    # View update history
-npx claude-flow update rollback   # Rollback last update
+npx arcanea-flow update check      # Check for updates
+npx arcanea-flow update all        # Update all packages
+npx arcanea-flow update history    # View update history
+npx arcanea-flow update rollback   # Rollback last update
 ```
 
 ---
 
 ### Previous Updates (2026-01-07)
 
-#### Release: @claude-flow/cli@3.0.0-alpha.15 (Latest)
+#### Release: @arcanea-flow/cli@3.0.0-alpha.15 (Latest)
 
 **Doctor Command Enhancements**:
 - **Claude Code CLI Check**: Verifies `@anthropic-ai/claude-code` installation
@@ -161,18 +161,18 @@ npx claude-flow update rollback   # Rollback last update
 
 ```bash
 # Check system health including Claude Code CLI
-npx claude-flow@v3alpha doctor
+npx arcanea-flow@v3alpha doctor
 
 # Auto-install Claude Code CLI if missing
-npx claude-flow@v3alpha doctor --install
+npx arcanea-flow@v3alpha doctor --install
 
 # Check only Claude Code CLI
-npx claude-flow@v3alpha doctor -c claude
+npx arcanea-flow@v3alpha doctor -c claude
 ```
 
-**Package Resolution Fix**: Fixed Windows module resolution issue where `@claude-flow/cli` exports pointed to wrong paths (`dist/index.js` → `dist/src/index.js`).
+**Package Resolution Fix**: Fixed Windows module resolution issue where `@arcanea-flow/cli` exports pointed to wrong paths (`dist/index.js` → `dist/src/index.js`).
 
-#### Release: @claude-flow/cli@3.0.0-alpha.7
+#### Release: @arcanea-flow/cli@3.0.0-alpha.7
 - **Hive-Mind CLI**: All MCP tools now exposed via CLI subcommands:
   - `hive-mind join <agent-id>` - Join agent to hive
   - `hive-mind leave <agent-id>` - Remove agent from hive
@@ -180,7 +180,7 @@ npx claude-flow@v3alpha doctor -c claude
   - `hive-mind broadcast -m <msg>` - Broadcast messages to workers
   - `hive-mind memory` - Access shared memory (get/set/delete/list)
 - **Bug Fix**: Fixed positional argument parsing for subcommands in CLI parser
-- **File Persistence**: All MCP tools use file-based persistence in `.claude-flow/` directories
+- **File Persistence**: All MCP tools use file-based persistence in `.arcanea-flow/` directories
 - **ADR-014**: Node.js Worker Daemon - cross-platform TypeScript daemon replaces shell helpers
 - **CLI**: `daemon` command with start/stop/status/trigger/enable subcommands
 - **Session Integration**: Auto-start daemon on SessionStart, auto-stop on SessionEnd
@@ -198,10 +198,10 @@ npx claude-flow@v3alpha doctor -c claude
 
 #### Install
 ```bash
-npx @claude-flow/cli@v3alpha --help
+npx @arcanea-flow/cli@v3alpha --help
 ```
 
-### Release: @claude-flow/cli@3.0.0-alpha.11 (2026-01-07)
+### Release: @arcanea-flow/cli@3.0.0-alpha.11 (2026-01-07)
 
 #### New V3 Advanced CLI Commands
 All commands include subcommand help and "Created with ❤️ by ruv.io" branding.
@@ -223,21 +223,21 @@ All commands include subcommand help and "Created with ❤️ by ruv.io" brandin
 
 **Smart Error Suggestions**: Typo detection with Levenshtein distance
 ```bash
-$ claude-flow swram
+$ arcanea-flow swram
 [ERROR] Unknown command: swram
   Did you mean one of these?
   - swarm
   - neural
   - start
 
-$ claude-flow memroy
+$ arcanea-flow memroy
 [ERROR] Unknown command: memroy
   Did you mean "memory"?
 ```
 
 **Doctor Command**: System health diagnostics
 ```bash
-$ claude-flow doctor
+$ arcanea-flow doctor
 Claude Flow Doctor
 ──────────────────────────────────────────────────
 ✓ Node.js Version: v22.21.1 (>= 20 required)
@@ -258,16 +258,16 @@ Summary: 6 passed, 5 warnings
 **Shell Completions**: Tab completion for all shells
 ```bash
 # Install bash completions
-claude-flow completions bash > ~/.bash_completion.d/claude-flow
+arcanea-flow completions bash > ~/.bash_completion.d/arcanea-flow
 
 # Install zsh completions
-claude-flow completions zsh > ~/.zfunc/_claude-flow
+arcanea-flow completions zsh > ~/.zfunc/_arcanea-flow
 
 # Install fish completions
-claude-flow completions fish > ~/.config/fish/completions/claude-flow.fish
+arcanea-flow completions fish > ~/.config/fish/completions/arcanea-flow.fish
 
 # Install PowerShell completions
-claude-flow completions powershell >> $PROFILE
+arcanea-flow completions powershell >> $PROFILE
 ```
 
 ## CLI Roadmap
@@ -282,41 +282,41 @@ claude-flow completions powershell >> $PROFILE
 | 🟡 P1 | Resolve provider config overlap | Pending | Unify provider configs across embeddings/providers commands |
 | 🟡 P1 | Add unified `logs` command | Pending | Centralized log viewing across daemon, agents, swarms |
 | 🟢 P2 | Add `upgrade` command | Pending | Self-update CLI to latest version |
-| 🟢 P2 | Add interactive shell/REPL mode | Pending | `claude-flow shell` for interactive command execution |
+| 🟢 P2 | Add interactive shell/REPL mode | Pending | `arcanea-flow shell` for interactive command execution |
 
 ### Implementation Plan
 
 **P0 - Critical (Next Release)**
 ```bash
 # Doctor command - diagnose system health
-claude-flow doctor              # Full system check
-claude-flow doctor --fix        # Auto-fix issues where possible
-claude-flow doctor --component mcp  # Check specific component
+arcanea-flow doctor              # Full system check
+arcanea-flow doctor --fix        # Auto-fix issues where possible
+arcanea-flow doctor --component mcp  # Check specific component
 
 # Shell completions
-claude-flow completions bash > ~/.bash_completion.d/claude-flow
-claude-flow completions zsh > ~/.zfunc/_claude-flow
-claude-flow completions fish > ~/.config/fish/completions/claude-flow.fish
+arcanea-flow completions bash > ~/.bash_completion.d/arcanea-flow
+arcanea-flow completions zsh > ~/.zfunc/_arcanea-flow
+arcanea-flow completions fish > ~/.config/fish/completions/arcanea-flow.fish
 ```
 
 **P1 - High Priority**
 ```bash
 # Unified logs command
-claude-flow logs                # All logs
-claude-flow logs --follow       # Tail logs
-claude-flow logs --component daemon
-claude-flow logs --level error
+arcanea-flow logs                # All logs
+arcanea-flow logs --follow       # Tail logs
+arcanea-flow logs --component daemon
+arcanea-flow logs --level error
 ```
 
 **P2 - Nice to Have**
 ```bash
 # Self-update
-claude-flow upgrade             # Upgrade to latest
-claude-flow upgrade --check     # Check for updates
-claude-flow upgrade --version 3.1.0
+arcanea-flow upgrade             # Upgrade to latest
+arcanea-flow upgrade --check     # Check for updates
+arcanea-flow upgrade --version 3.1.0
 
 # Interactive shell
-claude-flow shell               # Enter REPL
+arcanea-flow shell               # Enter REPL
 > swarm init mesh
 > agent spawn coder
 > memory search "patterns"
@@ -324,11 +324,11 @@ claude-flow shell               # Enter REPL
 
 ---
 
-## agentic-flow vs claude-flow Feature Comparison
+## agentic-flow vs arcanea-flow Feature Comparison
 
 ### Feature Matrix
 
-| Feature | agentic-flow | claude-flow | Integration Value |
+| Feature | agentic-flow | arcanea-flow | Integration Value |
 |---------|--------------|-------------|-------------------|
 | **Core Agent System** | | | |
 | Specialized Agents | 66+ | 15 (hierarchical) | 🟡 |
@@ -377,36 +377,36 @@ claude-flow shell               # Enter REPL
 **1. QUIC Transport (50-70% faster)**
 ```bash
 # Integration target:
-claude-flow transport quic --port 4433
-claude-flow swarm start --transport quic  # 50-70% faster agent comms
+arcanea-flow transport quic --port 4433
+arcanea-flow swarm start --transport quic  # 50-70% faster agent comms
 ```
 
 **2. Federation Hub (Ephemeral Agents)**
 ```bash
 # Integration target:
-claude-flow federation start --port 9443
-claude-flow federation spawn --tenant acme --lifetime 600
+arcanea-flow federation start --port 9443
+arcanea-flow federation spawn --tenant acme --lifetime 600
 ```
 *Value: Agents die but memories persist → learning across agent generations*
 
 **3. Model Optimization (85% cost savings)**
 ```bash
 # Integration target:
-claude-flow agent spawn -t coder --optimize --priority cost
-claude-flow providers optimize --task "Build API" --budget 0.01
+arcanea-flow agent spawn -t coder --optimize --priority cost
+arcanea-flow providers optimize --task "Build API" --budget 0.01
 ```
 
 **4. Provider Fallback (Enterprise resilience)**
 ```bash
 # Integration target:
-claude-flow providers fallback configure --primary anthropic --fallback openrouter,onnx
+arcanea-flow providers fallback configure --primary anthropic --fallback openrouter,onnx
 ```
 
 **5. ReasoningBank (WASM Learning Memory)**
 ```bash
 # Integration target:
-claude-flow reasoningbank store "pattern" --reasoning "..."
-claude-flow reasoningbank search "authentication patterns"
+arcanea-flow reasoningbank store "pattern" --reasoning "..."
+arcanea-flow reasoningbank search "authentication patterns"
 ```
 *Value: 10-100x faster reasoning pattern storage vs JSON*
 
@@ -430,9 +430,9 @@ claude-flow reasoningbank search "authentication patterns"
 
 ```bash
 # After Phase 1:
-claude-flow agent spawn -t coder --optimize --priority cost
-claude-flow providers fallback configure --primary anthropic --fallback openrouter,onnx
-claude-flow embeddings download all-MiniLM-L6-v2
+arcanea-flow agent spawn -t coder --optimize --priority cost
+arcanea-flow providers fallback configure --primary anthropic --fallback openrouter,onnx
+arcanea-flow embeddings download all-MiniLM-L6-v2
 ```
 
 #### Phase 2: Core Integration (2-3 weeks) → 9.5 → 9.7
@@ -446,10 +446,10 @@ claude-flow embeddings download all-MiniLM-L6-v2
 
 ```bash
 # After Phase 2:
-claude-flow federation start --port 9443
-claude-flow federation spawn --lifetime 300 --task "Quick analysis"
-claude-flow proxy start --provider openrouter
-claude-flow daemon dispatch security-audit
+arcanea-flow federation start --port 9443
+arcanea-flow federation spawn --lifetime 300 --task "Quick analysis"
+arcanea-flow proxy start --provider openrouter
+arcanea-flow daemon dispatch security-audit
 ```
 
 #### Phase 3: Advanced (4-6 weeks) → 9.7 → 9.9
@@ -462,16 +462,16 @@ claude-flow daemon dispatch security-audit
 
 ```bash
 # After Phase 3:
-claude-flow swarm start --transport quic  # 50-70% faster
-claude-flow reasoningbank store "pattern" --reasoning "..."
-claude-flow agent spawn -t security-analyst  # One of 66 types
+arcanea-flow swarm start --transport quic  # 50-70% faster
+arcanea-flow reasoningbank store "pattern" --reasoning "..."
+arcanea-flow agent spawn -t security-analyst  # One of 66 types
 ```
 
 ### Recommended Integration Approach
 
 **Option A: Dependency Approach (Fastest)**
 ```json
-// claude-flow/package.json
+// arcanea-flow/package.json
 {
   "dependencies": {
     "agentic-flow": "^2.0.3"
@@ -482,17 +482,17 @@ claude-flow agent spawn -t security-analyst  # One of 66 types
 **Option B: Port Code (More Control)**
 ```bash
 # Copy specific modules:
-- agentic-flow/src/transport/quic.ts → claude-flow/src/transport/
-- agentic-flow/src/federation/ → claude-flow/src/federation/
-- agentic-flow/src/reasoningbank/ → claude-flow/src/reasoningbank/
+- agentic-flow/src/transport/quic.ts → arcanea-flow/src/transport/
+- agentic-flow/src/federation/ → arcanea-flow/src/federation/
+- agentic-flow/src/reasoningbank/ → arcanea-flow/src/reasoningbank/
 ```
 
 **Option C: Unified Package (Long-term)**
 ```bash
-@claude-flow/core      # Shared primitives
-@claude-flow/cli       # CLI (current)
-@claude-flow/agents    # From agentic-flow's 66 agents
-@claude-flow/transport # QUIC + HTTP + WebSocket
+@arcanea-flow/core      # Shared primitives
+@arcanea-flow/cli       # CLI (current)
+@arcanea-flow/agents    # From agentic-flow's 66 agents
+@arcanea-flow/transport # QUIC + HTTP + WebSocket
 ```
 
 ---
@@ -511,21 +511,21 @@ claude-flow agent spawn -t security-analyst  # One of 66 types
 
 ### Feature Overlap Analysis
 
-**claude-flow ALREADY HAS** (via @claude-flow/embeddings):
-| Feature | claude-flow | ruvector | Status |
+**arcanea-flow ALREADY HAS** (via @arcanea-flow/embeddings):
+| Feature | arcanea-flow | ruvector | Status |
 |---------|-------------|----------|--------|
 | ONNX Embeddings | ✅ agentic-flow (~3ms) | ✅ @ruvector/core | **Equivalent** |
 | Local Embeddings | ✅ all-MiniLM-L6-v2 | ✅ all-MiniLM-L6-v2 | **Equivalent** |
-| HNSW Indexing | ✅ @claude-flow/memory | ✅ @ruvector/core | **Equivalent** |
+| HNSW Indexing | ✅ @arcanea-flow/memory | ✅ @ruvector/core | **Equivalent** |
 | Persistent Cache | ✅ SQLite + LRU | ✅ Memory cache | **Equivalent** |
-| Hyperbolic Embeddings | ✅ Poincaré ball | ❌ | **claude-flow ahead** |
-| Document Chunking | ✅ 4 strategies | ❌ | **claude-flow ahead** |
-| Normalization | ✅ L2, L1, min-max, z-score | ❌ | **claude-flow ahead** |
-| Neural Substrate | ✅ Drift, memory physics | ❌ | **claude-flow ahead** |
+| Hyperbolic Embeddings | ✅ Poincaré ball | ❌ | **arcanea-flow ahead** |
+| Document Chunking | ✅ 4 strategies | ❌ | **arcanea-flow ahead** |
+| Normalization | ✅ L2, L1, min-max, z-score | ❌ | **arcanea-flow ahead** |
+| Neural Substrate | ✅ Drift, memory physics | ❌ | **arcanea-flow ahead** |
 
 ### Unique ruvector Features (Integration Candidates)
 
-#### 🔴 Tier 1: High Value (claude-flow lacks these)
+#### 🔴 Tier 1: High Value (arcanea-flow lacks these)
 
 | Feature | ruvector Source | Integration Target | Value |
 |---------|-----------------|-------------------|-------|
@@ -549,7 +549,7 @@ claude-flow agent spawn -t security-analyst  # One of 66 types
 | Louvain Communities | `hooks_graph_cluster` | Module detection |
 | GNN Layers | `@ruvector/gnn` | Graph analysis |
 
-*Note: Flash Attention, SONA Learning, HNSW, and ONNX embeddings are already in claude-flow via agentic-flow.*
+*Note: Flash Attention, SONA Learning, HNSW, and ONNX embeddings are already in arcanea-flow via agentic-flow.*
 
 ### MCP Tools from ruvector (Unique Only)
 
@@ -565,16 +565,16 @@ claude mcp add ruvector-mcp -- npx ruvector mcp-server
 - `hooks_coverage_route`, `hooks_coverage_suggest` — Test-aware routing ✅
 - `hooks_graph_mincut`, `hooks_graph_cluster` — Code boundaries ✅
 
-**Already in claude-flow (skip):**
-- `hooks_rag_context` — Use @claude-flow/memory instead
-- `hooks_attention_info` — Use @claude-flow/neural instead
-- Embeddings tools — Use @claude-flow/embeddings instead
+**Already in arcanea-flow (skip):**
+- `hooks_rag_context` — Use @arcanea-flow/memory instead
+- `hooks_attention_info` — Use @arcanea-flow/neural instead
+- Embeddings tools — Use @arcanea-flow/embeddings instead
 
 ### Integration Approach
 
 **Recommended: Option A - Add as Optional Dependency (for unique features only)**
 ```json
-// @claude-flow/cli/package.json
+// @arcanea-flow/cli/package.json
 {
   "optionalDependencies": {
     "ruvector": "^0.1.95"
@@ -585,22 +585,22 @@ claude mcp add ruvector-mcp -- npx ruvector mcp-server
 **CLI Wrappers (unique ruvector features):**
 ```bash
 # Q-Learning agent routing (unique to ruvector)
-claude-flow route "task" --q-learning          # Uses hooks_route
+arcanea-flow route "task" --q-learning          # Uses hooks_route
 
 # AST analysis (unique to ruvector)
-claude-flow analyze ast src/                   # Uses hooks_ast_analyze
+arcanea-flow analyze ast src/                   # Uses hooks_ast_analyze
 
 # Diff classification (unique to ruvector)
-claude-flow analyze diff --risk                # Uses hooks_diff_analyze
+arcanea-flow analyze diff --risk                # Uses hooks_diff_analyze
 
 # Coverage-aware routing (unique to ruvector)
-claude-flow route "task" --coverage-aware      # Uses hooks_coverage_route
+arcanea-flow route "task" --coverage-aware      # Uses hooks_coverage_route
 ```
 
-**Already in claude-flow (DO NOT import from ruvector):**
+**Already in arcanea-flow (DO NOT import from ruvector):**
 ```bash
-claude-flow embeddings generate --local        # Uses @claude-flow/embeddings (ONNX)
-claude-flow memory search --semantic "query"   # Uses @claude-flow/memory (HNSW)
+arcanea-flow embeddings generate --local        # Uses @arcanea-flow/embeddings (ONNX)
+arcanea-flow memory search --semantic "query"   # Uses @arcanea-flow/memory (HNSW)
 ```
 
 ### ruvector Integration Roadmap
@@ -620,4 +620,4 @@ claude-flow memory search --semantic "query"   # Uses @claude-flow/memory (HNSW)
 - [ ] Add Louvain community detection (`analyze --modules`)
 - [ ] Integrate GNN layers for dependency graphs
 
-*Note: SONA, Flash Attention, HNSW already in claude-flow - no need to import.*
+*Note: SONA, Flash Attention, HNSW already in arcanea-flow - no need to import.*

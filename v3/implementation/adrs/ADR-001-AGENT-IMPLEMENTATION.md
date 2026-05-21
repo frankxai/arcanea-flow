@@ -145,7 +145,7 @@ Comprehensive test suites included:
 ### Exports from Integration Module
 
 ```typescript
-// From @claude-flow/integration
+// From @arcanea-flow/integration
 import {
   // Agent classes
   AgenticFlowAgent,
@@ -162,7 +162,7 @@ import {
   TaskResult,
   Message,
   AgentHealth,
-} from '@claude-flow/integration';
+} from '@arcanea-flow/integration';
 ```
 
 ### Following Existing Patterns
@@ -181,7 +181,7 @@ All adapters use:
 ## Files Created
 
 ```
-v3/@claude-flow/integration/src/
+v3/@arcanea-flow/integration/src/
 ├── agentic-flow-agent.ts          # 799 lines - Base agent class
 ├── agent-adapter.ts                # 625 lines - Adapter class
 ├── __tests__/
@@ -299,10 +299,10 @@ console.log(health.metrics.tasksCompleted); // Task count
 ## References
 
 - **ADR-001**: Adopt agentic-flow as Core Foundation
-- **SONAAdapter**: `/v3/@claude-flow/integration/src/sona-adapter.ts`
-- **AttentionCoordinator**: `/v3/@claude-flow/integration/src/attention-coordinator.ts`
-- **AgenticFlowBridge**: `/v3/@claude-flow/integration/src/agentic-flow-bridge.ts`
-- **Shared Interfaces**: `/v3/@claude-flow/shared/src/core/interfaces/agent.interface.ts`
+- **SONAAdapter**: `/v3/@arcanea-flow/integration/src/sona-adapter.ts`
+- **AttentionCoordinator**: `/v3/@arcanea-flow/integration/src/attention-coordinator.ts`
+- **AgenticFlowBridge**: `/v3/@arcanea-flow/integration/src/agentic-flow-bridge.ts`
+- **Shared Interfaces**: `/v3/@arcanea-flow/shared/src/core/interfaces/agent.interface.ts`
 
 ---
 

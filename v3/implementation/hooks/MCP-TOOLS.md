@@ -395,7 +395,7 @@ Bootstrap intelligence from repository analysis.
 ```json
 {
   "success": true,
-  "repositoryPath": "/workspaces/claude-flow",
+  "repositoryPath": "/workspaces/arcanea-flow",
   "statistics": {
     "filesAnalyzed": 247,
     "patternsExtracted": 156,

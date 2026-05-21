@@ -1153,7 +1153,7 @@ Nightly  → FlashAttention Consolidation + A/B Experiments + Transfer Learning
 
 ```bash
 # Minimal install - works on all platforms
-npm install claude-flow@3 --save
+npm install arcanea-flow@3 --save
 # ~2MB, no native dependencies, pure JavaScript
 ```
 
@@ -1167,37 +1167,37 @@ npm install claude-flow@3 --save
 
 ```bash
 # Install components as needed
-npx claude-flow install <component>
+npx arcanea-flow install <component>
 
 # Available components:
-npx claude-flow install learning      # RL + trajectory tracking
-npx claude-flow install memory        # Persistent memory (SQLite/WASM)
-npx claude-flow install attention     # Flash/MoE attention mechanisms
-npx claude-flow install transport     # QUIC transport layer
-npx claude-flow install neural        # Neural pattern training
-npx claude-flow install gnn           # GNN query enhancement
+npx arcanea-flow install learning      # RL + trajectory tracking
+npx arcanea-flow install memory        # Persistent memory (SQLite/WASM)
+npx arcanea-flow install attention     # Flash/MoE attention mechanisms
+npx arcanea-flow install transport     # QUIC transport layer
+npx arcanea-flow install neural        # Neural pattern training
+npx arcanea-flow install gnn           # GNN query enhancement
 ```
 
 ### 16.4 Platform-Specific Installation
 
 #### Linux (Fastest)
 ```bash
-npm install claude-flow@3
-npx claude-flow install native   # NAPI bindings (50-200x faster)
+npm install arcanea-flow@3
+npx arcanea-flow install native   # NAPI bindings (50-200x faster)
 # Total: ~15MB with native bindings
 ```
 
 #### macOS (Apple Silicon + Intel)
 ```bash
-npm install claude-flow@3
-npx claude-flow install native   # Universal binary
+npm install arcanea-flow@3
+npx arcanea-flow install native   # Universal binary
 # Fallback: WASM if Rosetta issues
 ```
 
 #### Windows
 ```bash
-npm install claude-flow@3
-npx claude-flow install wasm     # WASM backend (recommended)
+npm install arcanea-flow@3
+npx arcanea-flow install wasm     # WASM backend (recommended)
 # Note: NAPI optional but requires build tools
 ```
 
@@ -1254,7 +1254,7 @@ const platform = {
 ### 16.7 Feature Flags
 
 ```typescript
-// .claude-flow/config.json
+// .arcanea-flow/config.json
 {
   "core": {
     "runtime": "auto",           // auto | napi | wasm | js
@@ -1287,19 +1287,19 @@ const platform = {
 
 ```bash
 # Minimal CLI usage
-npm install -g claude-flow@3
+npm install -g arcanea-flow@3
 
 # Basic swarm coordination
-npm install claude-flow@3
+npm install arcanea-flow@3
 
 # With persistent memory
-npm install claude-flow@3 && npx claude-flow install memory
+npm install arcanea-flow@3 && npx arcanea-flow install memory
 
 # Full learning system
-npm install claude-flow@3 && npx claude-flow install learning memory
+npm install arcanea-flow@3 && npx arcanea-flow install learning memory
 
 # Maximum performance (Linux/Mac)
-npm install claude-flow@3 && npx claude-flow install --all --native
+npm install arcanea-flow@3 && npx arcanea-flow install --all --native
 ```
 
 ---
@@ -1334,17 +1334,17 @@ npm install claude-flow@3 && npx claude-flow install --all --native
 
 ```bash
 # Run performance benchmarks
-npx claude-flow benchmark
+npx arcanea-flow benchmark
 
 # Specific component benchmarks
-npx claude-flow benchmark memory --iterations 1000
-npx claude-flow benchmark learning --episodes 100
-npx claude-flow benchmark attention --batch-size 32
+npx arcanea-flow benchmark memory --iterations 1000
+npx arcanea-flow benchmark learning --episodes 100
+npx arcanea-flow benchmark attention --batch-size 32
 
 # Compare runtimes
-npx claude-flow benchmark --runtime napi
-npx claude-flow benchmark --runtime wasm
-npx claude-flow benchmark --runtime js
+npx arcanea-flow benchmark --runtime napi
+npx arcanea-flow benchmark --runtime wasm
+npx arcanea-flow benchmark --runtime js
 ```
 
 ### 17.4 Regression Detection
@@ -1416,11 +1416,11 @@ const learningConfig = {
 
 ```bash
 # View real-time metrics
-npx claude-flow metrics
+npx arcanea-flow metrics
 
 # Export metrics for external systems
-npx claude-flow metrics --format prometheus
-npx claude-flow metrics --format json > metrics.json
+npx arcanea-flow metrics --format prometheus
+npx arcanea-flow metrics --format json > metrics.json
 ```
 
 ### 19.2 Key Metrics
@@ -1437,11 +1437,11 @@ npx claude-flow metrics --format json > metrics.json
 ### 19.3 Logging Levels
 
 ```typescript
-// .claude-flow/config.json
+// .arcanea-flow/config.json
 {
   "logging": {
     "level": "info",           // error | warn | info | debug | trace
-    "file": ".claude-flow/logs/claude-flow.log",
+    "file": ".arcanea-flow/logs/arcanea-flow.log",
     "maxSize": "10MB",
     "maxFiles": 5,
     "components": {
@@ -1460,10 +1460,10 @@ npx claude-flow metrics --format json > metrics.json
 
 ```bash
 # Audit before install
-npm audit claude-flow@3
+npm audit arcanea-flow@3
 
 # Verify checksums
-npx claude-flow verify --checksums
+npx arcanea-flow verify --checksums
 ```
 
 ### 20.2 Data Privacy
@@ -1478,7 +1478,7 @@ npx claude-flow verify --checksums
 ### 20.3 MCP Tool Access Control
 
 ```typescript
-// .claude-flow/config.json
+// .arcanea-flow/config.json
 {
   "security": {
     "mcpToolAllowlist": [

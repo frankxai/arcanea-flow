@@ -252,7 +252,7 @@ interface CollectionManagerState {
 ```typescript
 // Core collection - essential plugins
 const coreCollection: PluginCollection = {
-  id: 'claude-flow-core',
+  id: 'arcanea-flow-core',
   name: 'Claude Flow Core Plugins',
   version: '3.0.0',
   plugins: [
@@ -264,7 +264,7 @@ const coreCollection: PluginCollection = {
 
 // Development collection - coding assistance
 const developmentCollection: PluginCollection = {
-  id: 'claude-flow-development',
+  id: 'arcanea-flow-development',
   name: 'Development Tools',
   version: '3.0.0',
   plugins: [
@@ -278,7 +278,7 @@ const developmentCollection: PluginCollection = {
 
 // Intelligence collection - AI/ML features
 const intelligenceCollection: PluginCollection = {
-  id: 'claude-flow-intelligence',
+  id: 'arcanea-flow-intelligence',
   name: 'Intelligence & Learning',
   version: '3.0.0',
   plugins: [
@@ -290,7 +290,7 @@ const intelligenceCollection: PluginCollection = {
 
 // Swarm collection - multi-agent coordination
 const swarmCollection: PluginCollection = {
-  id: 'claude-flow-swarm',
+  id: 'arcanea-flow-swarm',
   name: 'Swarm Coordination',
   version: '3.0.0',
   plugins: [
@@ -303,7 +303,7 @@ const swarmCollection: PluginCollection = {
 
 // Security collection - security features
 const securityCollection: PluginCollection = {
-  id: 'claude-flow-security',
+  id: 'arcanea-flow-security',
   name: 'Security & Audit',
   version: '3.0.0',
   plugins: [
@@ -558,8 +558,8 @@ await collectionManager.loadCollection(myCollection);
 
 ## References
 
-- [Plugin Interface](../../@claude-flow/plugins/src/core/plugin-interface.ts)
-- [Plugin Registry](../../@claude-flow/plugins/src/registry/plugin-registry.ts)
-- [Collection Manager](../../@claude-flow/plugins/src/collections/collection-manager.ts)
-- [Dependency Graph](../../@claude-flow/plugins/src/registry/dependency-graph.ts)
-- [Official Collections](../../@claude-flow/plugins/src/collections/official/index.ts)
+- [Plugin Interface](../../@arcanea-flow/plugins/src/core/plugin-interface.ts)
+- [Plugin Registry](../../@arcanea-flow/plugins/src/registry/plugin-registry.ts)
+- [Collection Manager](../../@arcanea-flow/plugins/src/collections/collection-manager.ts)
+- [Dependency Graph](../../@arcanea-flow/plugins/src/registry/dependency-graph.ts)
+- [Official Collections](../../@arcanea-flow/plugins/src/collections/official/index.ts)

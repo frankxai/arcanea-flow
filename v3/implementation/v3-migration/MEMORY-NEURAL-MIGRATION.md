@@ -27,7 +27,7 @@ v2/src/memory/
 
 ### V3 Memory Architecture
 ```
-v3/@claude-flow/memory/
+v3/@arcanea-flow/memory/
 ├── src/
 │   ├── types.ts              # Type definitions
 │   ├── index.ts              # UnifiedMemoryService
@@ -85,18 +85,18 @@ v3/@claude-flow/memory/
 
 ```typescript
 // V2: Initialize memory
-import { MemoryManager } from 'claude-flow/memory';
+import { MemoryManager } from 'arcanea-flow/memory';
 const memory = new MemoryManager({
   backend: 'sqlite',
-  path: './.claude-flow/memory.db'
+  path: './.arcanea-flow/memory.db'
 });
 
 // V3: Initialize memory
-import { UnifiedMemoryService } from '@claude-flow/memory';
+import { UnifiedMemoryService } from '@arcanea-flow/memory';
 const memory = new UnifiedMemoryService({
   backend: 'hybrid',  // SQLite + AgentDB
   sqlite: {
-    path: './.claude-flow/memory.db'
+    path: './.arcanea-flow/memory.db'
   },
   agentdb: {
     enableHNSW: true,
@@ -157,7 +157,7 @@ const results = await memory.search({
 });
 
 // V3: Fluent query builder
-import { QueryBuilder } from '@claude-flow/memory';
+import { QueryBuilder } from '@arcanea-flow/memory';
 const results = await new QueryBuilder(memory)
   .semantic('feature request')
   .type('episodic')
@@ -171,7 +171,7 @@ const results = await new QueryBuilder(memory)
 
 ```typescript
 // V3: HNSW vector search
-import { HNSWIndex } from '@claude-flow/memory';
+import { HNSWIndex } from '@arcanea-flow/memory';
 
 const index = new HNSWIndex({
   dimensions: 384,
@@ -192,17 +192,17 @@ const results = await index.search(queryEmbedding, k: 10);
 
 ```typescript
 // Migrate V2 data to V3
-import { migrateMemoryData } from '@claude-flow/memory/migration';
+import { migrateMemoryData } from '@arcanea-flow/memory/migration';
 
 await migrateMemoryData({
   source: {
     type: 'v2-sqlite',
-    path: './.claude-flow/memory.db'
+    path: './.arcanea-flow/memory.db'
   },
   target: {
     type: 'v3-hybrid',
-    sqlitePath: './.claude-flow/v3-memory.db',
-    agentdbPath: './.claude-flow/v3-vectors'
+    sqlitePath: './.arcanea-flow/v3-memory.db',
+    agentdbPath: './.arcanea-flow/v3-vectors'
   },
   options: {
     generateEmbeddings: true,
@@ -228,7 +228,7 @@ v2/src/
 
 ### V3 Neural Architecture
 ```
-v3/@claude-flow/neural/
+v3/@arcanea-flow/neural/
 ├── src/
 │   ├── index.ts              # NeuralLearningSystem
 │   ├── sona-manager.ts       # SONA modes
@@ -289,14 +289,14 @@ v3/@claude-flow/neural/
 
 ```typescript
 // V2: Neural integration
-import { NeuralDomainMapper } from 'claude-flow/neural';
-import { registerNeuralHooks } from 'claude-flow/neural/integration';
+import { NeuralDomainMapper } from 'arcanea-flow/neural';
+import { registerNeuralHooks } from 'arcanea-flow/neural/integration';
 
 const mapper = new NeuralDomainMapper();
 registerNeuralHooks(mapper);
 
 // V3: Neural learning system
-import { NeuralLearningSystem } from '@claude-flow/neural';
+import { NeuralLearningSystem } from '@arcanea-flow/neural';
 
 const neural = new NeuralLearningSystem({
   mode: 'balanced',  // real-time | balanced | research | edge | batch
@@ -343,13 +343,13 @@ await trajectory.complete({ quality: 0.9 });
 
 ```typescript
 // V2: Via agentic-flow adapter
-import { ReasoningBankAdapter } from 'claude-flow/reasoningbank';
+import { ReasoningBankAdapter } from 'arcanea-flow/reasoningbank';
 const rb = new ReasoningBankAdapter();
 await rb.store(memory);
 const patterns = await rb.retrieve(query);
 
 // V3: Native implementation
-import { ReasoningBank } from '@claude-flow/neural';
+import { ReasoningBank } from '@arcanea-flow/neural';
 
 const rb = new ReasoningBank({
   memory: agentDbBackend,  // Uses AgentDB for 150x faster search
@@ -370,7 +370,7 @@ await rb.consolidate();                               // CONSOLIDATE
 
 ```typescript
 // V3 only: Configure learning modes
-import { SONAManager, LearningMode } from '@claude-flow/neural';
+import { SONAManager, LearningMode } from '@arcanea-flow/neural';
 
 const sona = new SONAManager();
 
@@ -394,7 +394,7 @@ sona.setMode(LearningMode.BATCH);
 
 ```typescript
 // V3 only: Use RL algorithms
-import { createPPO, createDQN, createA2C } from '@claude-flow/neural/algorithms';
+import { createPPO, createDQN, createA2C } from '@arcanea-flow/neural/algorithms';
 
 // PPO for continuous action spaces
 const ppo = createPPO({
@@ -422,7 +422,7 @@ const a2c = createA2C({
 
 ```typescript
 // V3 only: LoRA and EWC
-import { SONAManager } from '@claude-flow/neural';
+import { SONAManager } from '@arcanea-flow/neural';
 
 const sona = new SONAManager({
   enableLoRA: true,
@@ -455,7 +455,7 @@ await sona.train(newTask);
 ## Migration Checklist
 
 ### Memory Migration
-- [ ] Update imports to `@claude-flow/memory`
+- [ ] Update imports to `@arcanea-flow/memory`
 - [ ] Configure hybrid backend
 - [ ] Run data migration script
 - [ ] Generate embeddings for existing entries
@@ -463,7 +463,7 @@ await sona.train(newTask);
 - [ ] Test HNSW index performance
 
 ### Neural Migration
-- [ ] Update imports to `@claude-flow/neural`
+- [ ] Update imports to `@arcanea-flow/neural`
 - [ ] Initialize NeuralLearningSystem
 - [ ] Configure SONA mode
 - [ ] Migrate training code to trajectories

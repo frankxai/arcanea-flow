@@ -25,12 +25,12 @@ Claude-Flow currently uses `better-sqlite3` as its primary database engine, whic
 
 **Primary Database Locations**:
 ```
-/home/user/claude-flow/src/api/database-service.ts          (Line 559: dynamic import)
-/home/user/claude-flow/src/core/DatabaseManager.ts          (Line 197: require)
-/home/user/claude-flow/src/core/persistence.ts              (Line 5: import)
-/home/user/claude-flow/src/memory/backends/sqlite.ts        (Wrapper-based)
-/home/user/claude-flow/src/memory/sqlite-store.js           (Wrapper-based)
-/home/user/claude-flow/src/memory/sqlite-wrapper.js         (Abstraction layer ⭐)
+/home/user/arcanea-flow/src/api/database-service.ts          (Line 559: dynamic import)
+/home/user/arcanea-flow/src/core/DatabaseManager.ts          (Line 197: require)
+/home/user/arcanea-flow/src/core/persistence.ts              (Line 5: import)
+/home/user/arcanea-flow/src/memory/backends/sqlite.ts        (Wrapper-based)
+/home/user/arcanea-flow/src/memory/sqlite-store.js           (Wrapper-based)
+/home/user/arcanea-flow/src/memory/sqlite-wrapper.js         (Abstraction layer ⭐)
 ```
 
 **Additional Usages** (17 total files):
@@ -52,7 +52,7 @@ Claude-Flow already implements graceful fallback mechanisms:
 2. **Secondary**: JSON file storage (`JSONProvider`)
 3. **Tertiary**: In-memory storage (`InMemoryStore`)
 
-**Key Abstraction Layer**: `/home/user/claude-flow/src/memory/sqlite-wrapper.js`
+**Key Abstraction Layer**: `/home/user/arcanea-flow/src/memory/sqlite-wrapper.js`
 - Platform detection (Windows, WSL, macOS ARM64)
 - Auto-rebuild on NODE_MODULE_VERSION mismatch
 - Graceful error handling with user-friendly messages
@@ -238,7 +238,7 @@ function getRecommendedProvider() {
 ### 3.2 Implementation Plan
 
 **Phase 1: sql.js Provider Implementation**
-1. Create `/home/user/claude-flow/src/memory/backends/sqljs.ts`
+1. Create `/home/user/arcanea-flow/src/memory/backends/sqljs.ts`
 2. Implement `IDatabaseProvider` interface
 3. Add WASM file bundling configuration
 4. Implement file persistence wrapper
@@ -302,7 +302,7 @@ const db = await createDatabaseProvider(path, {
 
 ### 4.2 Configuration Options
 
-**User-Facing Configuration** (`claude-flow.config.js`):
+**User-Facing Configuration** (`arcanea-flow.config.js`):
 ```javascript
 module.exports = {
   database: {
@@ -489,7 +489,7 @@ stmt.free(); // Release memory
 
 **Current Experience** (Windows):
 ```bash
-$ npm install claude-flow@alpha
+$ npm install arcanea-flow@alpha
 ⚠️  Warning: On Windows, use pnpm to avoid native dependency issues
 ⚠️  better-sqlite3 compilation failed
 ✅ Falling back to JSON storage
@@ -497,7 +497,7 @@ $ npm install claude-flow@alpha
 
 **New Experience** (Windows):
 ```bash
-$ npm install claude-flow@alpha
+$ npm install arcanea-flow@alpha
 ✅ Installed successfully
 ℹ️  Using sql.js database provider (cross-platform mode)
 ℹ️  For best performance, install build tools for native SQLite
@@ -631,7 +631,7 @@ Implement sql.js as a fallback provider alongside better-sqlite3:
 ### 11.1 SqlJsBackend Implementation (Pseudocode)
 
 ```typescript
-// /home/user/claude-flow/src/memory/backends/sqljs.ts
+// /home/user/arcanea-flow/src/memory/backends/sqljs.ts
 
 import initSqlJs, { Database as SqlJsDatabase } from 'sql.js';
 import { promises as fs } from 'fs';
@@ -715,7 +715,7 @@ export class SqlJsBackend implements IMemoryBackend {
 ### 11.2 Updated sqlite-wrapper.js (Pseudocode)
 
 ```javascript
-// /home/user/claude-flow/src/memory/sqlite-wrapper.js
+// /home/user/arcanea-flow/src/memory/sqlite-wrapper.js
 
 let BetterSqlite3 = null;
 let SqlJs = null;

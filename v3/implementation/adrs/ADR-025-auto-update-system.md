@@ -1,4 +1,4 @@
-# ADR-025: Auto-Update System for @claude-flow Packages
+# ADR-025: Auto-Update System for @arcanea-flow Packages
 
 ## Status
 **Implemented** - 2026-01-13
@@ -14,16 +14,16 @@
 | CLI Commands | `src/commands/update.ts` | ~340 |
 | Startup Integration | `src/index.ts` | ~20 |
 
-**Published:** @claude-flow/cli@3.0.0-alpha.83
+**Published:** @arcanea-flow/cli@3.0.0-alpha.83
 
 ## Context
 
 The Claude Flow V3 ecosystem consists of multiple packages:
-- `@claude-flow/cli` - Main CLI tool
-- `@claude-flow/embeddings` - Vector embeddings
-- `@claude-flow/security` - Security utilities
-- `@claude-flow/integration` - agentic-flow integration
-- `@claude-flow/testing` - Test utilities
+- `@arcanea-flow/cli` - Main CLI tool
+- `@arcanea-flow/embeddings` - Vector embeddings
+- `@arcanea-flow/security` - Security utilities
+- `@arcanea-flow/integration` - agentic-flow integration
+- `@arcanea-flow/testing` - Test utilities
 
 When one package is updated, dependent packages may need updates for compatibility. Currently, users must manually check for updates, leading to:
 - Version mismatches causing runtime errors
@@ -55,10 +55,10 @@ Implement an **auto-update system** that:
 
 | Priority | Packages | Auto-Update |
 |----------|----------|-------------|
-| Critical | `@claude-flow/security` | Always (patches) |
-| High | `@claude-flow/cli` | Minor + Patch |
-| Normal | `@claude-flow/embeddings`, `@claude-flow/integration` | Patch only |
-| Low | `@claude-flow/testing` | Notify only |
+| Critical | `@arcanea-flow/security` | Always (patches) |
+| High | `@arcanea-flow/cli` | Minor + Patch |
+| Normal | `@arcanea-flow/embeddings`, `@arcanea-flow/integration` | Patch only |
+| Low | `@arcanea-flow/testing` | Notify only |
 
 ## Implementation
 
@@ -129,7 +129,7 @@ interface RateLimitState {
   packageVersions: Record<string, string>;
 }
 
-// Stored in: ~/.claude-flow/update-state.json
+// Stored in: ~/.arcanea-flow/update-state.json
 ```
 
 #### 3. PackageValidator (`src/update/validator.ts`)
@@ -148,10 +148,10 @@ interface ValidationResult {
 ```
 1. CLI Start
    │
-   ├─► Check rate limit cache (~/.claude-flow/update-state.json)
+   ├─► Check rate limit cache (~/.arcanea-flow/update-state.json)
    │   └─► If checked within 24h AND no --force-update → Skip
    │
-   ├─► Query npm registry for @claude-flow/* packages
+   ├─► Query npm registry for @arcanea-flow/* packages
    │   └─► Compare versions using semver
    │
    ├─► For each package with available update:
@@ -160,35 +160,35 @@ interface ValidationResult {
    │   └─► Determine if auto-update applies
    │
    ├─► Execute auto-updates (if any)
-   │   ├─► npm install @claude-flow/package@version
+   │   ├─► npm install @arcanea-flow/package@version
    │   ├─► Verify installation success
    │   └─► Log to update history
    │
    └─► Display notification for non-auto updates
-       └─► "Run `npx claude-flow update` to update X packages"
+       └─► "Run `npx arcanea-flow update` to update X packages"
 ```
 
 ### CLI Commands
 
 ```bash
 # Check for updates (manual)
-npx claude-flow update check
+npx arcanea-flow update check
 
 # Update all packages
-npx claude-flow update all
+npx arcanea-flow update all
 
 # Update specific package
-npx claude-flow update @claude-flow/embeddings
+npx arcanea-flow update @arcanea-flow/embeddings
 
 # View update history
-npx claude-flow update history
+npx arcanea-flow update history
 
 # Rollback last update
-npx claude-flow update rollback
+npx arcanea-flow update rollback
 
 # Configure auto-update
-npx claude-flow config set update.autoUpdateMinor true
-npx claude-flow config set update.checkIntervalHours 12
+npx arcanea-flow config set update.autoUpdateMinor true
+npx arcanea-flow config set update.checkIntervalHours 12
 ```
 
 ### Environment Variables
@@ -207,7 +207,7 @@ CI=true
 ### Configuration File
 
 ```json
-// claude-flow.config.json
+// arcanea-flow.config.json
 {
   "update": {
     "enabled": true,
@@ -218,11 +218,11 @@ CI=true
       "major": false
     },
     "priority": {
-      "@claude-flow/security": "critical",
-      "@claude-flow/cli": "high",
-      "@claude-flow/embeddings": "normal",
-      "@claude-flow/integration": "normal",
-      "@claude-flow/testing": "low"
+      "@arcanea-flow/security": "critical",
+      "@arcanea-flow/cli": "high",
+      "@arcanea-flow/embeddings": "normal",
+      "@arcanea-flow/integration": "normal",
+      "@arcanea-flow/testing": "low"
     },
     "exclude": []
   }

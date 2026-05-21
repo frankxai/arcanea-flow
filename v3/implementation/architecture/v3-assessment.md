@@ -458,18 +458,18 @@ CLI → Orchestrator → [TerminalManager, MemoryManager, CoordinationManager, M
 
 3. **Memory Integration**
    - Use agentic-flow's memory system as primary
-   - Add claude-flow-specific extensions via plugins
+   - Add arcanea-flow-specific extensions via plugins
    - Leverage agentic-flow's distributed memory
 
 4. **Task Execution**
    - Use agentic-flow's task graph execution
-   - Add claude-flow-specific task types
+   - Add arcanea-flow-specific task types
    - Leverage agentic-flow's retry and fault tolerance
 
 **Architecture Shift:**
 ```
-Current: claude-flow implements everything, integrates with agentic-flow
-   v3: agentic-flow provides core, claude-flow extends and specializes
+Current: arcanea-flow implements everything, integrates with agentic-flow
+   v3: agentic-flow provides core, arcanea-flow extends and specializes
 ```
 
 ---
@@ -1426,7 +1426,7 @@ Orchestrator (core/orchestrator.ts)
 - Swarm coordination from agentic-flow
 - Task graph execution from agentic-flow
 - Memory system from agentic-flow
-- Add claude-flow extensions via plugins
+- Add arcanea-flow extensions via plugins
 ```
 
 ### Appendix D: Testing Strategy

@@ -2,7 +2,7 @@
 
 > **Modular AI Agent Coordination System** - A complete reimagining of Claude-Flow with 15-agent hierarchical mesh swarm coordination.
 
-[![Version](https://img.shields.io/badge/version-3.0.0--alpha.1-blue.svg)](https://github.com/ruvnet/claude-flow)
+[![Version](https://img.shields.io/badge/version-3.0.0--alpha.1-blue.svg)](https://github.com/ruvnet/arcanea-flow)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20.0.0-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3+-blue.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-purple.svg)](../LICENSE)
@@ -67,7 +67,7 @@ V3 represents a complete architectural overhaul:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     @claude-flow/v3-monorepo                    │
+│                     @arcanea-flow/v3-monorepo                    │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
@@ -100,7 +100,7 @@ V3 represents a complete architectural overhaul:
 
 ```
 v3/
-├── @claude-flow/                    # Modular packages
+├── @arcanea-flow/                    # Modular packages
 │   ├── security/                    # Security module
 │   │   └── src/
 │   │       ├── index.ts             # Password hashing, validators
@@ -192,8 +192,8 @@ v3/
 │   └── implementation/              # Implementation details
 │
 ├── helpers/                         # Cross-platform helpers
-│   ├── claude-flow-v3.sh            # Master helper (Linux/macOS)
-│   ├── claude-flow-v3.ps1           # Master helper (Windows)
+│   ├── arcanea-flow-v3.sh            # Master helper (Linux/macOS)
+│   ├── arcanea-flow-v3.ps1           # Master helper (Windows)
 │   └── templates/                   # Helper templates
 │
 ├── scripts/                         # Utility scripts
@@ -207,22 +207,22 @@ v3/
 
 ## Modules
 
-### @claude-flow/security
+### @arcanea-flow/security
 Security-first implementation with CVE fixes, input validation, and credential management.
 
 ```typescript
-import { PasswordHasher, validateInput, sanitizePath } from '@claude-flow/security';
+import { PasswordHasher, validateInput, sanitizePath } from '@arcanea-flow/security';
 
 const hasher = new PasswordHasher();
 const hash = await hasher.hash('password');
 const valid = await hasher.verify('password', hash);
 ```
 
-### @claude-flow/memory
+### @arcanea-flow/memory
 Unified memory service with AgentDB, HNSW indexing, and 150x-12,500x faster search.
 
 ```typescript
-import { HybridMemoryRepository, HNSWIndex } from '@claude-flow/memory';
+import { HybridMemoryRepository, HNSWIndex } from '@arcanea-flow/memory';
 
 const memory = new HybridMemoryRepository({
   backend: 'agentdb',
@@ -233,11 +233,11 @@ await memory.store({ key: 'knowledge', value: 'context', embedding: [...] });
 const results = await memory.search({ query: 'knowledge', limit: 10 });
 ```
 
-### @claude-flow/swarm
+### @arcanea-flow/swarm
 15-agent hierarchical mesh coordination with consensus protocols.
 
 ```typescript
-import { UnifiedSwarmCoordinator } from '@claude-flow/swarm';
+import { UnifiedSwarmCoordinator } from '@arcanea-flow/swarm';
 
 const coordinator = new UnifiedSwarmCoordinator({
   topology: 'hierarchical-mesh',
@@ -248,22 +248,22 @@ await coordinator.initialize();
 await coordinator.spawnAgent({ type: 'queen-coordinator' });
 ```
 
-### @claude-flow/integration
+### @arcanea-flow/integration
 Deep integration with agentic-flow@alpha per ADR-001.
 
 ```typescript
-import { AgenticFlowBridge } from '@claude-flow/integration';
+import { AgenticFlowBridge } from '@arcanea-flow/integration';
 
 const bridge = new AgenticFlowBridge();
 await bridge.initialize();
 const agent = await bridge.createAgent({ type: 'coder' });
 ```
 
-### @claude-flow/performance
+### @arcanea-flow/performance
 Benchmarking framework with Flash Attention validation.
 
 ```typescript
-import { BenchmarkRunner, formatTime } from '@claude-flow/performance';
+import { BenchmarkRunner, formatTime } from '@arcanea-flow/performance';
 
 const runner = new BenchmarkRunner();
 const result = await runner.run('map-lookup', () => map.get(key), {
@@ -272,49 +272,49 @@ const result = await runner.run('map-lookup', () => map.get(key), {
 });
 ```
 
-### @claude-flow/neural
+### @arcanea-flow/neural
 SONA learning integration for self-optimizing agents.
 
 ```typescript
-import { SONAAdapter } from '@claude-flow/neural';
+import { SONAAdapter } from '@arcanea-flow/neural';
 
 const sona = new SONAAdapter();
 await sona.train({ patterns: learningData });
 const prediction = await sona.predict(context);
 ```
 
-### @claude-flow/cli
+### @arcanea-flow/cli
 Modern CLI with interactive prompts and formatted output.
 
 ```bash
-npx @claude-flow/cli swarm init --topology hierarchical-mesh
-npx @claude-flow/cli agent spawn --type queen-coordinator
-npx @claude-flow/cli memory search "knowledge"
+npx @arcanea-flow/cli swarm init --topology hierarchical-mesh
+npx @arcanea-flow/cli agent spawn --type queen-coordinator
+npx @arcanea-flow/cli memory search "knowledge"
 ```
 
-### @claude-flow/testing
+### @arcanea-flow/testing
 TDD London School framework with mocks, fixtures, and regression testing.
 
 ```typescript
-import { createMockAgent, createTestFixture } from '@claude-flow/testing';
+import { createMockAgent, createTestFixture } from '@arcanea-flow/testing';
 
 const mockAgent = createMockAgent({ type: 'coder' });
 const fixture = createTestFixture('swarm-coordination');
 ```
 
-### @claude-flow/shared
+### @arcanea-flow/shared
 Common types, events, utilities, and core interfaces.
 
 ```typescript
-import { EventBus, Result, success, failure } from '@claude-flow/shared';
-import type { AgentId, TaskStatus } from '@claude-flow/shared/types';
+import { EventBus, Result, success, failure } from '@arcanea-flow/shared';
+import type { AgentId, TaskStatus } from '@arcanea-flow/shared/types';
 ```
 
-### @claude-flow/deployment
+### @arcanea-flow/deployment
 Release management and CI/CD automation.
 
 ```typescript
-import { ReleaseManager } from '@claude-flow/deployment';
+import { ReleaseManager } from '@arcanea-flow/deployment';
 
 const release = new ReleaseManager();
 await release.prepare({ version: '3.0.0', changelog: '...' });
@@ -325,7 +325,7 @@ await release.prepare({ version: '3.0.0', changelog: '...' });
 ### Quick Start
 
 ```typescript
-import { initializeV3Swarm } from '@claude-flow/v3';
+import { initializeV3Swarm } from '@arcanea-flow/v3';
 
 // Initialize the swarm
 const swarm = await initializeV3Swarm();
@@ -351,18 +351,18 @@ const result = await swarm.waitForTask(task.id);
 
 ```typescript
 // Import everything
-import * as claudeFlow from '@claude-flow/v3';
+import * as claudeFlow from '@arcanea-flow/v3';
 
 // Or import specific modules for tree-shaking
-import { UnifiedSwarmCoordinator } from '@claude-flow/swarm';
-import { PasswordHasher } from '@claude-flow/security';
-import { HNSWIndex } from '@claude-flow/memory';
+import { UnifiedSwarmCoordinator } from '@arcanea-flow/swarm';
+import { PasswordHasher } from '@arcanea-flow/security';
+import { HNSWIndex } from '@arcanea-flow/memory';
 ```
 
 ### MCP Server
 
 ```typescript
-import { createMCPServer } from '@claude-flow/v3/mcp';
+import { createMCPServer } from '@arcanea-flow/v3/mcp';
 
 const server = createMCPServer({
   transport: 'stdio',
@@ -378,14 +378,14 @@ Cross-platform automation for V3 development:
 
 ```bash
 # Linux/macOS
-./helpers/claude-flow-v3.sh init
-./helpers/claude-flow-v3.sh status
-./helpers/claude-flow-v3.sh update domain 3
+./helpers/arcanea-flow-v3.sh init
+./helpers/arcanea-flow-v3.sh status
+./helpers/arcanea-flow-v3.sh update domain 3
 
 # Windows (PowerShell)
-.\helpers\claude-flow-v3.ps1 init
-.\helpers\claude-flow-v3.ps1 status
-.\helpers\claude-flow-v3.ps1 update domain 3
+.\helpers\arcanea-flow-v3.ps1 init
+.\helpers\arcanea-flow-v3.ps1 status
+.\helpers\arcanea-flow-v3.ps1 update domain 3
 ```
 
 Features:
@@ -398,8 +398,8 @@ Features:
 
 ```bash
 # Clone the repository
-git clone https://github.com/ruvnet/claude-flow.git
-cd claude-flow/v3
+git clone https://github.com/ruvnet/arcanea-flow.git
+cd arcanea-flow/v3
 
 # Install dependencies
 pnpm install
@@ -452,20 +452,20 @@ pnpm test:coverage
 - [Helper System](./helpers/README.md)
 
 ### Modules
-- [@claude-flow/security](./@claude-flow/security/)
-- [@claude-flow/memory](./@claude-flow/memory/)
-- [@claude-flow/swarm](./@claude-flow/swarm/)
-- [@claude-flow/integration](./@claude-flow/integration/)
-- [@claude-flow/performance](./@claude-flow/performance/)
-- [@claude-flow/neural](./@claude-flow/neural/)
-- [@claude-flow/cli](./@claude-flow/cli/)
-- [@claude-flow/testing](./@claude-flow/testing/)
-- [@claude-flow/shared](./@claude-flow/shared/)
-- [@claude-flow/deployment](./@claude-flow/deployment/)
+- [@arcanea-flow/security](./@arcanea-flow/security/)
+- [@arcanea-flow/memory](./@arcanea-flow/memory/)
+- [@arcanea-flow/swarm](./@arcanea-flow/swarm/)
+- [@arcanea-flow/integration](./@arcanea-flow/integration/)
+- [@arcanea-flow/performance](./@arcanea-flow/performance/)
+- [@arcanea-flow/neural](./@arcanea-flow/neural/)
+- [@arcanea-flow/cli](./@arcanea-flow/cli/)
+- [@arcanea-flow/testing](./@arcanea-flow/testing/)
+- [@arcanea-flow/shared](./@arcanea-flow/shared/)
+- [@arcanea-flow/deployment](./@arcanea-flow/deployment/)
 
 ### Examples
-- [AgentDB Example](./@claude-flow/memory/examples/agentdb-example.ts)
-- [Cross-Platform Usage](./@claude-flow/memory/examples/cross-platform-usage.ts)
+- [AgentDB Example](./@arcanea-flow/memory/examples/agentdb-example.ts)
+- [Cross-Platform Usage](./@arcanea-flow/memory/examples/cross-platform-usage.ts)
 
 ### MCP Tools
 - [Agent Tools](./mcp/tools/agent-tools.ts)
@@ -474,7 +474,7 @@ pnpm test:coverage
 - [Hooks Tools](./mcp/tools/hooks-tools.ts)
 
 ### External
-- [GitHub Repository](https://github.com/ruvnet/claude-flow)
+- [GitHub Repository](https://github.com/ruvnet/arcanea-flow)
 - [agentic-flow Integration](https://github.com/ruvnet/agentic-flow)
 - [AgentDB](https://github.com/ruvnet/agentdb)
 

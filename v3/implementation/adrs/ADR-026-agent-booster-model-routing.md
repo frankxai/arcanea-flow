@@ -70,7 +70,7 @@ Task Input
 ### 1. Enhanced Model Router Interface
 
 ```typescript
-// v3/@claude-flow/cli/src/ruvector/model-router.ts
+// v3/@arcanea-flow/cli/src/ruvector/model-router.ts
 
 import { AgentBoosterPreprocessor, EditIntent, PreprocessorResult } from 'agentic-flow';
 
@@ -111,7 +111,7 @@ export interface EnhancedModelRouterConfig {
 ### 2. Enhanced Route Function
 
 ```typescript
-// v3/@claude-flow/cli/src/ruvector/model-router.ts
+// v3/@arcanea-flow/cli/src/ruvector/model-router.ts
 
 export class EnhancedModelRouter {
   private preprocessor: AgentBoosterPreprocessor;
@@ -253,7 +253,7 @@ export class EnhancedModelRouter {
 ### 3. Pre-Task Hook Integration
 
 ```typescript
-// v3/@claude-flow/cli/src/commands/hooks.ts (update preTaskCommand)
+// v3/@arcanea-flow/cli/src/commands/hooks.ts (update preTaskCommand)
 
 // In pre-task action, after existing logic:
 
@@ -296,7 +296,7 @@ try {
 ### 4. Agent Spawn Integration
 
 ```typescript
-// v3/@claude-flow/cli/src/mcp-tools/agent-tools.ts (update determineAgentModel)
+// v3/@arcanea-flow/cli/src/mcp-tools/agent-tools.ts (update determineAgentModel)
 
 import { EnhancedModelRouter } from '../ruvector/enhanced-model-router.js';
 
@@ -385,7 +385,7 @@ async function determineAgentModel(
 ## File Structure
 
 ```
-v3/@claude-flow/cli/src/
+v3/@arcanea-flow/cli/src/
 ├── ruvector/
 │   ├── model-router.ts           # Existing tiny-dancer router
 │   ├── enhanced-model-router.ts  # NEW: Agent Booster + AST integration

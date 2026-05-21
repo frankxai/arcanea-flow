@@ -74,7 +74,7 @@ export const defaultSwarmConfig: V3SwarmConfig = {
   loadBalancingStrategy: 'capability-match',
 
   // V3 Extensions
-  name: 'claude-flow-v3-swarm',
+  name: 'arcanea-flow-v3-swarm',
   version: '3.0.0',
   description: '15-agent hierarchical mesh swarm for V3 implementation',
 
@@ -156,7 +156,7 @@ export const defaultSwarmConfig: V3SwarmConfig = {
   // GitHub Integration
   github: {
     enabled: true,
-    repository: 'ruvnet/claude-flow',
+    repository: 'ruvnet/arcanea-flow',
     issueLabels: {
       'agent-1': 'swarm:agent-1',
       'agent-2-4': 'swarm:agent-2-4',

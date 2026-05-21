@@ -14,7 +14,7 @@ import {
   type InitOptions,
   type InitResult,
   type PlatformInfo,
-} from '@claude-flow/cli/init';
+} from '@arcanea-flow/cli/init';
 ```
 
 ## Core Functions
@@ -35,12 +35,12 @@ async function executeInit(options: InitOptions): Promise<InitResult>
 
 **Example:**
 ```typescript
-import { executeInit, DEFAULT_INIT_OPTIONS } from '@claude-flow/cli/init';
+import { executeInit, DEFAULT_INIT_OPTIONS } from '@arcanea-flow/cli/init';
 
 const result = await executeInit({
   ...DEFAULT_INIT_OPTIONS,
   targetDir: '/path/to/project',
-  sourceBaseDir: '/path/to/claude-flow',
+  sourceBaseDir: '/path/to/arcanea-flow',
   force: true,
 });
 
@@ -63,7 +63,7 @@ function detectPlatform(): PlatformInfo
 
 **Example:**
 ```typescript
-import { detectPlatform } from '@claude-flow/cli/init';
+import { detectPlatform } from '@arcanea-flow/cli/init';
 
 const platform = detectPlatform();
 console.log(`OS: ${platform.os}`);
@@ -146,7 +146,7 @@ interface InitComponents {
 ### Settings Generator
 
 ```typescript
-import { generateSettings, generateSettingsJson } from '@claude-flow/cli/init';
+import { generateSettings, generateSettingsJson } from '@arcanea-flow/cli/init';
 
 // Generate settings object
 const settings = generateSettings(options);
@@ -158,7 +158,7 @@ const json = generateSettingsJson(options);
 ### MCP Generator
 
 ```typescript
-import { generateMCPConfig, generateMCPJson, generateMCPCommands } from '@claude-flow/cli/init';
+import { generateMCPConfig, generateMCPJson, generateMCPCommands } from '@arcanea-flow/cli/init';
 
 // Generate MCP config object
 const config = generateMCPConfig(options);
@@ -168,7 +168,7 @@ const json = generateMCPJson(options);
 
 // Generate manual add commands
 const commands = generateMCPCommands(options);
-// ['claude mcp add claude-flow -- npx @claude-flow/cli mcp start', ...]
+// ['claude mcp add arcanea-flow -- npx @arcanea-flow/cli mcp start', ...]
 ```
 
 ### Helpers Generator
@@ -184,7 +184,7 @@ import {
   generateWindowsBatchWrapper,
   generateCrossPlatformSessionManager,
   generateHelpers,
-} from '@claude-flow/cli/init';
+} from '@arcanea-flow/cli/init';
 
 // Generate individual scripts
 const preCommit = generatePreCommitHook();
@@ -199,7 +199,7 @@ const helpers = generateHelpers(options);
 ### Statusline Generator
 
 ```typescript
-import { generateStatuslineScript, generateStatuslineHook } from '@claude-flow/cli/init';
+import { generateStatuslineScript, generateStatuslineHook } from '@arcanea-flow/cli/init';
 
 // Generate statusline.js content
 const script = generateStatuslineScript(options);
@@ -248,7 +248,7 @@ Everything enabled:
 ### Basic Initialization
 
 ```typescript
-import { executeInit, DEFAULT_INIT_OPTIONS } from '@claude-flow/cli/init';
+import { executeInit, DEFAULT_INIT_OPTIONS } from '@arcanea-flow/cli/init';
 
 const result = await executeInit({
   ...DEFAULT_INIT_OPTIONS,
@@ -259,12 +259,12 @@ const result = await executeInit({
 ### Custom Configuration
 
 ```typescript
-import { executeInit, DEFAULT_INIT_OPTIONS } from '@claude-flow/cli/init';
+import { executeInit, DEFAULT_INIT_OPTIONS } from '@arcanea-flow/cli/init';
 
 const result = await executeInit({
   ...DEFAULT_INIT_OPTIONS,
   targetDir: '/my/project',
-  sourceBaseDir: '/path/to/claude-flow', // Source for skills/commands/agents
+  sourceBaseDir: '/path/to/arcanea-flow', // Source for skills/commands/agents
   force: true,
   components: {
     ...DEFAULT_INIT_OPTIONS.components,
@@ -291,7 +291,7 @@ const result = await executeInit({
 ### Platform-Aware Initialization
 
 ```typescript
-import { executeInit, detectPlatform, DEFAULT_INIT_OPTIONS } from '@claude-flow/cli/init';
+import { executeInit, detectPlatform, DEFAULT_INIT_OPTIONS } from '@arcanea-flow/cli/init';
 
 const platform = detectPlatform();
 
@@ -312,7 +312,7 @@ console.log(`Initialized for ${platform.os} (${platform.shell})`);
 ### Selective Component Installation
 
 ```typescript
-import { executeInit, MINIMAL_INIT_OPTIONS } from '@claude-flow/cli/init';
+import { executeInit, MINIMAL_INIT_OPTIONS } from '@arcanea-flow/cli/init';
 
 // Install only skills
 const skillsOnly = await executeInit({
@@ -342,7 +342,7 @@ const skillsOnly = await executeInit({
 ## Error Handling
 
 ```typescript
-import { executeInit, DEFAULT_INIT_OPTIONS } from '@claude-flow/cli/init';
+import { executeInit, DEFAULT_INIT_OPTIONS } from '@arcanea-flow/cli/init';
 
 try {
   const result = await executeInit({

@@ -174,7 +174,7 @@ describe('CLI Startup Benchmarks', () => {
       'CLI Cold Start',
       async () => {
         await new Promise<void>((resolve, reject) => {
-          const proc = spawn('npx', ['claude-flow', '--version'], {
+          const proc = spawn('npx', ['arcanea-flow', '--version'], {
             env: { ...process.env, NODE_ENV: 'production' }
           });
           proc.on('close', (code) => code === 0 ? resolve() : reject());

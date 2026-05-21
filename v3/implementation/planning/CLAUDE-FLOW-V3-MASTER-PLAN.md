@@ -127,7 +127,7 @@ const hash = await bcrypt.hash(password, SALT_ROUNDS);
 
 ```typescript
 // REMOVE these hardcoded credentials
-email: 'admin@claude-flow.local'
+email: 'admin@arcanea-flow.local'
 password: 'admin123'  // CRITICAL RISK
 
 // v3: Generate random on installation
@@ -402,7 +402,7 @@ export class SqlJsBackend implements DatabaseBackend {
 |------|------|--------|
 | `dist-cjs/` | 22MB | Remove from git, add to .gitignore |
 | Duplicate lock file | 0.6MB | Keep one (npm or pnpm) |
-| `claude-flow-wiki/` | 0 | Remove empty directory |
+| `arcanea-flow-wiki/` | 0 | Remove empty directory |
 
 #### Medium Priority (26.6MB)
 
@@ -435,7 +435,7 @@ rm -f package-lock.json  # If using pnpm
 rm -f pnpm-lock.yaml     # If using npm
 
 # 4. Remove empty directory
-rmdir claude-flow-wiki/
+rmdir arcanea-flow-wiki/
 
 # 5. Clean up .gitignore duplicates
 # (manual edit to remove 8 duplicate "hive-mind-prompt-*.txt" entries)
@@ -457,7 +457,7 @@ dist-cjs/
 # Runtime databases (shouldn't be tracked)
 .swarm/memory.db
 .hive-mind/memory.db
-.claude-flow/**/*.db
+.arcanea-flow/**/*.db
 ```
 
 ---
@@ -469,7 +469,7 @@ dist-cjs/
 | Directory | Size | Issues |
 |-----------|------|--------|
 | `.claude/` | 11MB | 9 settings variants, 3,720 checkpoints |
-| `.claude-flow/` | 2.5MB | Stale training data |
+| `.arcanea-flow/` | 2.5MB | Stale training data |
 | `.claude-plugin/` | 81KB | Hook duplication |
 | `.hive-mind/` | 20KB | Separate database |
 | `.swarm/` | 272KB | Separate database |
@@ -518,7 +518,7 @@ dist-cjs/
     ├── MIGRATION_LOG.md
     └── OPTIMIZATION_STATUS.md
 
-.claude-flow/
+.arcanea-flow/
 ├── swarm-config.json              # Includes agent profiles
 ├── coordination/                  # NEW: Unified runtime
 │   ├── memory.db                  # Merged swarm + hive-mind
@@ -532,8 +532,8 @@ dist-cjs/
     └── latest-validation.json     # Single file
 
 # REMOVE these directories
-.swarm/                            # → .claude-flow/coordination/
-.hive-mind/                        # → .claude-flow/coordination/
+.swarm/                            # → .arcanea-flow/coordination/
+.hive-mind/                        # → .arcanea-flow/coordination/
 .ruv-swarm/                        # Archive or remove
 ```
 
@@ -698,23 +698,23 @@ commands/
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "commands": ["npx claude-flow hooks pre-tool --tool=$TOOL_NAME"]
+        "commands": ["npx arcanea-flow hooks pre-tool --tool=$TOOL_NAME"]
       }
     ],
     "PostToolUse": [
       {
         "matcher": "*",
-        "commands": ["npx claude-flow hooks post-tool --tool=$TOOL_NAME"]
+        "commands": ["npx arcanea-flow hooks post-tool --tool=$TOOL_NAME"]
       }
     ],
     "PreCompact": [
       {
-        "commands": ["npx claude-flow hooks pre-compact --session=$SESSION_ID"]
+        "commands": ["npx arcanea-flow hooks pre-compact --session=$SESSION_ID"]
       }
     ],
     "Stop": [
       {
-        "commands": ["npx claude-flow hooks session-end --export-metrics true"]
+        "commands": ["npx arcanea-flow hooks session-end --export-metrics true"]
       }
     ]
   },
@@ -1096,7 +1096,7 @@ docs/reasoningbank/models/*/memory.db.backup
 dist-cjs/ (remove from git)
 
 # Empty
-claude-flow-wiki/
+arcanea-flow-wiki/
 
 # Duplicate settings
 .claude/settings-complete.json
@@ -1132,7 +1132,7 @@ npm audit fix --force
 ./scripts/cleanup-v3.sh
 
 # Run migration
-npx claude-flow migrate --to v3
+npx arcanea-flow migrate --to v3
 
 # Verify backward compatibility
 npm run test:compatibility
@@ -1160,10 +1160,10 @@ npm run build:v3
 
 ```typescript
 // v3 with backward compatibility
-import { SwarmCoordinator } from 'claude-flow';  // v2 API still works
+import { SwarmCoordinator } from 'arcanea-flow';  // v2 API still works
 
 // v3 native
-import { AgenticFlowAdapter } from 'claude-flow/v3';
+import { AgenticFlowAdapter } from 'arcanea-flow/v3';
 const adapter = new AgenticFlowAdapter({ sona: 'research' });
 await adapter.initialize();
 ```

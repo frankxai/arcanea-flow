@@ -25,7 +25,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/aidefence':
+  '@arcanea-flow/aidefence':
     dependencies:
       agentdb:
         specifier: '>=2.0.0-alpha.1'
@@ -41,9 +41,9 @@ importers:
         specifier: ^1.1.0
         version: 1.6.1(@types/node@20.19.27)
 
-  '@claude-flow/browser':
+  '@arcanea-flow/browser':
     dependencies:
-      '@claude-flow/cli':
+      '@arcanea-flow/cli':
         specifier: ^3.0.0-alpha.140
         version: link:../cli
       agent-browser:
@@ -66,9 +66,9 @@ importers:
         specifier: ^2.0.0
         version: 2.1.9(@types/node@20.19.27)
 
-  '@claude-flow/claims':
+  '@arcanea-flow/claims':
     dependencies:
-      '@claude-flow/shared':
+      '@arcanea-flow/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
       zod:
@@ -91,18 +91,18 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/cli':
+  '@arcanea-flow/cli':
     dependencies:
-      '@claude-flow/aidefence':
+      '@arcanea-flow/aidefence':
         specifier: ^3.0.2
         version: link:../aidefence
-      '@claude-flow/embeddings':
+      '@arcanea-flow/embeddings':
         specifier: ^3.0.0-alpha.12
         version: link:../embeddings
-      '@claude-flow/mcp':
+      '@arcanea-flow/mcp':
         specifier: ^3.0.0-alpha.8
         version: link:../mcp
-      '@claude-flow/shared':
+      '@arcanea-flow/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
     devDependencies:
@@ -113,9 +113,9 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/deployment':
+  '@arcanea-flow/deployment':
     dependencies:
-      '@claude-flow/shared':
+      '@arcanea-flow/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
     devDependencies:
@@ -126,9 +126,9 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/embeddings':
+  '@arcanea-flow/embeddings':
     dependencies:
-      '@claude-flow/shared':
+      '@arcanea-flow/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
       '@xenova/transformers':
@@ -151,15 +151,15 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/hooks':
+  '@arcanea-flow/hooks':
     dependencies:
-      '@claude-flow/memory':
+      '@arcanea-flow/memory':
         specifier: ^3.0.0-alpha.2
         version: link:../memory
-      '@claude-flow/neural':
+      '@arcanea-flow/neural':
         specifier: ^3.0.0-alpha.2
         version: link:../neural
-      '@claude-flow/shared':
+      '@arcanea-flow/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
       zod:
@@ -183,7 +183,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/integration':
+  '@arcanea-flow/integration':
     dependencies:
       agentic-flow:
         specifier: ^2.0.0-alpha
@@ -197,7 +197,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/mcp':
+  '@arcanea-flow/mcp':
     dependencies:
       ajv:
         specifier: ^8.12.0
@@ -228,7 +228,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/memory':
+  '@arcanea-flow/memory':
     dependencies:
       agentdb:
         specifier: alpha
@@ -251,16 +251,16 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/neural':
+  '@arcanea-flow/neural':
     dependencies:
-      '@claude-flow/memory':
+      '@arcanea-flow/memory':
         specifier: ^3.0.0-alpha.2
         version: link:../memory
       '@ruvector/sona':
         specifier: latest
         version: 0.1.5
 
-  '@claude-flow/performance':
+  '@arcanea-flow/performance':
     dependencies:
       '@ruvector/attention':
         specifier: latest
@@ -273,12 +273,12 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/plugins':
+  '@arcanea-flow/plugins':
     dependencies:
-      '@claude-flow/hooks':
+      '@arcanea-flow/hooks':
         specifier: ^3.0.0-alpha.2
         version: link:../hooks
-      '@claude-flow/memory':
+      '@arcanea-flow/memory':
         specifier: ^3.0.0-alpha.2
         version: link:../memory
       '@ruvector/learning-wasm':
@@ -301,7 +301,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/providers':
+  '@arcanea-flow/providers':
     dependencies:
       '@ruvector/ruvllm':
         specifier: ^0.2.3
@@ -326,7 +326,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@types/node@20.19.27)(tsx@4.21.0)
 
-  '@claude-flow/security':
+  '@arcanea-flow/security':
     dependencies:
       bcrypt:
         specifier: ^5.1.1
@@ -342,7 +342,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/shared':
+  '@arcanea-flow/shared':
     dependencies:
       sql.js:
         specifier: ^1.10.3
@@ -358,21 +358,21 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/swarm':
+  '@arcanea-flow/swarm':
     devDependencies:
       vitest:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/testing':
+  '@arcanea-flow/testing':
     devDependencies:
-      '@claude-flow/memory':
+      '@arcanea-flow/memory':
         specifier: ^3.0.0-alpha.2
         version: link:../memory
-      '@claude-flow/shared':
+      '@arcanea-flow/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
-      '@claude-flow/swarm':
+      '@arcanea-flow/swarm':
         specifier: ^3.0.0-alpha.1
         version: link:../swarm
       typescript:
@@ -4232,10 +4232,10 @@ packages:
     hasBin: true
     requiresBuild: true
     peerDependencies:
-      claude-flow: ^2.7.0
+      arcanea-flow: ^2.7.0
       flow-nexus: ^1.0.0
     peerDependenciesMeta:
-      claude-flow:
+      arcanea-flow:
         optional: true
       flow-nexus:
         optional: true

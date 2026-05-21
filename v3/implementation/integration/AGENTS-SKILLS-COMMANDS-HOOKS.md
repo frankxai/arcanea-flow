@@ -352,9 +352,9 @@ tools:
   - Task
   - TodoWrite
   - Bash
-  - mcp__claude-flow__swarm_init
-  - mcp__claude-flow__agent_spawn
-  - mcp__claude-flow__task_orchestrate
+  - mcp__arcanea-flow__swarm_init
+  - mcp__arcanea-flow__agent_spawn
+  - mcp__arcanea-flow__task_orchestrate
 ---
 
 # Swarm Orchestration Skill
@@ -589,7 +589,7 @@ All hooks defined in `.claude/config.json`:
       {
         "matcher": "Bash",
         "commands": [
-          "npx claude-flow hooks pre-tool --tool=$TOOL_NAME --command=\"$BASH_COMMAND\""
+          "npx arcanea-flow hooks pre-tool --tool=$TOOL_NAME --command=\"$BASH_COMMAND\""
         ],
         "timeout": 5000,
         "failOnError": false
@@ -597,7 +597,7 @@ All hooks defined in `.claude/config.json`:
       {
         "matcher": "Write|Edit",
         "commands": [
-          "npx claude-flow hooks pre-edit --file=$FILE_PATH"
+          "npx arcanea-flow hooks pre-edit --file=$FILE_PATH"
         ]
       }
     ],
@@ -606,13 +606,13 @@ All hooks defined in `.claude/config.json`:
       {
         "matcher": "*",
         "commands": [
-          "npx claude-flow hooks post-tool --tool=$TOOL_NAME --success=$SUCCESS"
+          "npx arcanea-flow hooks post-tool --tool=$TOOL_NAME --success=$SUCCESS"
         ]
       },
       {
         "matcher": "Write|Edit",
         "commands": [
-          "npx claude-flow hooks post-edit --file=$FILE_PATH --memory-key=\"edits/$FILE_PATH\""
+          "npx arcanea-flow hooks post-edit --file=$FILE_PATH --memory-key=\"edits/$FILE_PATH\""
         ]
       }
     ],
@@ -620,7 +620,7 @@ All hooks defined in `.claude/config.json`:
     "PreCompact": [
       {
         "commands": [
-          "npx claude-flow hooks pre-compact --session=$SESSION_ID"
+          "npx arcanea-flow hooks pre-compact --session=$SESSION_ID"
         ]
       }
     ],
@@ -628,7 +628,7 @@ All hooks defined in `.claude/config.json`:
     "Stop": [
       {
         "commands": [
-          "npx claude-flow hooks session-end --export-metrics true"
+          "npx arcanea-flow hooks session-end --export-metrics true"
         ]
       }
     ]

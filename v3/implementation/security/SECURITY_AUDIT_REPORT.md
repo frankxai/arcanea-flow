@@ -106,7 +106,7 @@ private initializeDefaultUsers(): void {
   // Create default admin user
   const adminUser: User = {
     id: 'admin_default',
-    email: 'admin@claude-flow.local',
+    email: 'admin@arcanea-flow.local',
     passwordHash: createHash('sha256').update('admin123' + 'salt').digest('hex'),
     role: 'admin',
     // ...
@@ -115,7 +115,7 @@ private initializeDefaultUsers(): void {
   // Create default service user
   const serviceUser: User = {
     id: 'service_default',
-    email: 'service@claude-flow.local',
+    email: 'service@arcanea-flow.local',
     passwordHash: createHash('sha256').update('service123' + 'salt').digest('hex'),
     role: 'service',
     // ...
@@ -124,8 +124,8 @@ private initializeDefaultUsers(): void {
 ```
 
 **Default Credentials:**
-- Admin: `admin@claude-flow.local` / `admin123`
-- Service: `service@claude-flow.local` / `service123`
+- Admin: `admin@arcanea-flow.local` / `admin123`
+- Service: `service@arcanea-flow.local` / `service123`
 
 **Impact:**
 - Trivial to gain admin access
@@ -167,7 +167,7 @@ const child = spawn('npx', ['ruv-swarm', 'hook', ...args], {
 **Attack Vector:**
 ```bash
 # Attacker-controlled input could inject commands
-claude-flow hook pre-task --description "test; whoami; echo"
+arcanea-flow hook pre-task --description "test; whoami; echo"
 ```
 
 **Recommendation:**
@@ -246,8 +246,8 @@ if (query.search) {
 **Attack Vector:**
 ```bash
 # Read sensitive files
-claude-flow task workflow ../../../etc/passwd
-claude-flow task workflow ~/.ssh/id_rsa
+arcanea-flow task workflow ../../../etc/passwd
+arcanea-flow task workflow ~/.ssh/id_rsa
 ```
 
 **Recommendation:**
@@ -336,10 +336,10 @@ process.env.TOKEN = 'secret-token';
 **Attack Vector:**
 ```bash
 # Overwrite critical config
-claude-flow config set "authConfig.jwtSecret" "hacked"
+arcanea-flow config set "authConfig.jwtSecret" "hacked"
 
 # Prototype pollution
-claude-flow config set "__proto__.isAdmin" "true"
+arcanea-flow config set "__proto__.isAdmin" "true"
 ```
 
 **Recommendation:**
@@ -649,7 +649,7 @@ git-secrets --scan
 truffleHog --regex --entropy=False .
 
 # 4. Container scanning (if using Docker)
-trivy image claude-flow:latest
+trivy image arcanea-flow:latest
 
 # 5. Dynamic testing
 npm run test:security
@@ -701,7 +701,7 @@ The Claude-Flow codebase shows **strong security foundations** in some areas (ti
 ## 10. Contact & Support
 
 For security vulnerabilities, please contact:
-- **Security Team:** security@claude-flow.io
+- **Security Team:** security@arcanea-flow.io
 - **GitHub Security Advisories:** https://github.com/ruvnet/claude-code-flow/security/advisories
 
 **Report Format:**

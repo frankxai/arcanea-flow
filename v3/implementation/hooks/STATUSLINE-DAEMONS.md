@@ -24,9 +24,9 @@ The V3 hooks system integrates with background daemons and statusline displays t
 ├─────────────────────────────────────────────────────────────────────────┤
 │  statusline.sh (on-demand, <200ms)                                       │
 │  └─> Reads from:                                                         │
-│       ├─ .claude-flow/metrics.db      (SQLite, primary)                 │
-│       ├─ .claude-flow/hooks.db        (ReasoningBank patterns)          │
-│       └─ .claude-flow/metrics/*.json  (exported, legacy compat)         │
+│       ├─ .arcanea-flow/metrics.db      (SQLite, primary)                 │
+│       ├─ .arcanea-flow/hooks.db        (ReasoningBank patterns)          │
+│       └─ .arcanea-flow/metrics/*.json  (exported, legacy compat)         │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  SessionEnd Hook                                                         │
 │  └─> .claude/helpers/daemon-manager.sh stop                             │
@@ -59,7 +59,7 @@ Central control for all background processes with hooks integration.
 
 **PID Management:**
 ```
-.claude-flow/pids/
+.arcanea-flow/pids/
 ├── swarm-monitor.pid      # Swarm monitoring daemon
 ├── metrics-daemon.pid     # Metrics collection daemon
 └── hooks-daemon.pid       # Hooks learning daemon
@@ -67,7 +67,7 @@ Central control for all background processes with hooks integration.
 
 **Log Files:**
 ```
-.claude-flow/logs/
+.arcanea-flow/logs/
 ├── daemon.log             # Daemon manager operations
 ├── swarm-monitor.log      # Process detection logs
 ├── metrics-daemon.log     # Metrics sync logs
@@ -212,7 +212,7 @@ node .claude/helpers/hooks-daemon.mjs export --format json
 # .claude/statusline.sh - V3 with Hooks Integration
 
 # Read from SQLite if available
-if [ -f ".claude-flow/metrics.db" ]; then
+if [ -f ".arcanea-flow/metrics.db" ]; then
   METRICS=$(node -e "
     const db = require('.claude/helpers/metrics-db.mjs');
     console.log(JSON.stringify(db.getStatuslineData()));
@@ -258,7 +258,7 @@ printf "────────────────────────
           {
             "type": "command",
             "timeout": 5000,
-            "command": "/workspaces/claude-flow/.claude/helpers/daemon-manager.sh start 3 30 60"
+            "command": "/workspaces/arcanea-flow/.claude/helpers/daemon-manager.sh start 3 30 60"
           }
         ]
       }
@@ -269,7 +269,7 @@ printf "────────────────────────
           {
             "type": "command",
             "timeout": 3000,
-            "command": "/workspaces/claude-flow/.claude/helpers/daemon-manager.sh stop"
+            "command": "/workspaces/arcanea-flow/.claude/helpers/daemon-manager.sh stop"
           }
         ]
       }
@@ -288,12 +288,12 @@ printf "────────────────────────
   },
   "statusLine": {
     "type": "command",
-    "command": "/workspaces/claude-flow/.claude/statusline.sh"
+    "command": "/workspaces/arcanea-flow/.claude/statusline.sh"
   }
 }
 ```
 
-### V3 Project Settings (`.claude-flow/config.json`)
+### V3 Project Settings (`.arcanea-flow/config.json`)
 
 ```json
 {
@@ -306,12 +306,12 @@ printf "────────────────────────
     "metricsSync": {
       "enabled": true,
       "interval": 30000,
-      "database": ".claude-flow/metrics.db"
+      "database": ".arcanea-flow/metrics.db"
     },
     "hooksLearning": {
       "enabled": true,
       "interval": 60000,
-      "database": ".claude-flow/hooks.db"
+      "database": ".arcanea-flow/hooks.db"
     }
   },
   "statusline": {
@@ -336,7 +336,7 @@ SessionStart Hook Triggered
     │   └─> Start hooks-daemon.mjs (every 60s)
     │
     ├─> Initialize ReasoningBank
-    │   ├─> Load patterns from .claude-flow/hooks.db
+    │   ├─> Load patterns from .arcanea-flow/hooks.db
     │   └─> Warm HNSW index for retrieval
     │
     └─> First statusline render
@@ -447,13 +447,13 @@ SessionEnd Hook Triggered
 .claude/helpers/daemon-manager.sh status
 
 # View logs
-tail -f .claude-flow/logs/daemon.log
+tail -f .arcanea-flow/logs/daemon.log
 
 # Check for stale PID files
-ls -la .claude-flow/pids/
+ls -la .arcanea-flow/pids/
 
 # Manual cleanup and restart
-rm .claude-flow/pids/*.pid
+rm .arcanea-flow/pids/*.pid
 .claude/helpers/daemon-manager.sh start
 ```
 
@@ -464,7 +464,7 @@ rm .claude-flow/pids/*.pid
 node .claude/helpers/metrics-db.mjs sync
 
 # Check SQLite database
-sqlite3 .claude-flow/metrics.db "SELECT * FROM hooks_metrics"
+sqlite3 .arcanea-flow/metrics.db "SELECT * FROM hooks_metrics"
 
 # Verify statusline script
 bash -x .claude/statusline.sh
@@ -505,7 +505,7 @@ node .claude/helpers/hooks-daemon.mjs rebuild-index
     ├── swarm-monitor.sh             # Process detection
     └── hooks-daemon.mjs             # Learning background process
 
-.claude-flow/
+.arcanea-flow/
 ├── metrics.db                       # Main metrics database
 ├── hooks.db                         # ReasoningBank storage
 ├── config.json                      # V3 configuration

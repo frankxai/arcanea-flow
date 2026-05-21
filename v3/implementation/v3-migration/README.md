@@ -95,13 +95,13 @@ This directory contains detailed analysis of capabilities, gaps, and migration p
 
 ```bash
 # Check migration status
-npx claude-flow migrate status
+npx arcanea-flow migrate status
 
 # Run automatic migration
-npx claude-flow migrate run --target all --backup
+npx arcanea-flow migrate run --target all --backup
 
 # Verify migration
-npx claude-flow migrate verify
+npx arcanea-flow migrate verify
 ```
 
 ## Related Documentation

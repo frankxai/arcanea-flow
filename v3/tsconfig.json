@@ -3,31 +3,31 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@claude-flow/security": ["./@claude-flow/security/src"],
-      "@claude-flow/memory": ["./@claude-flow/memory/src"],
-      "@claude-flow/integration": ["./@claude-flow/integration/src"],
-      "@claude-flow/swarm": ["./@claude-flow/swarm/src"],
-      "@claude-flow/performance": ["./@claude-flow/performance/src"],
-      "@claude-flow/cli": ["./@claude-flow/cli/src"],
-      "@claude-flow/neural": ["./@claude-flow/neural/src"],
-      "@claude-flow/testing": ["./@claude-flow/testing/src"],
-      "@claude-flow/deployment": ["./@claude-flow/deployment/src"],
-      "@claude-flow/shared": ["./@claude-flow/shared/src"],
-      "@claude-flow/hooks": ["./@claude-flow/hooks/src"]
+      "@arcanea-flow/security": ["./@arcanea-flow/security/src"],
+      "@arcanea-flow/memory": ["./@arcanea-flow/memory/src"],
+      "@arcanea-flow/integration": ["./@arcanea-flow/integration/src"],
+      "@arcanea-flow/swarm": ["./@arcanea-flow/swarm/src"],
+      "@arcanea-flow/performance": ["./@arcanea-flow/performance/src"],
+      "@arcanea-flow/cli": ["./@arcanea-flow/cli/src"],
+      "@arcanea-flow/neural": ["./@arcanea-flow/neural/src"],
+      "@arcanea-flow/testing": ["./@arcanea-flow/testing/src"],
+      "@arcanea-flow/deployment": ["./@arcanea-flow/deployment/src"],
+      "@arcanea-flow/shared": ["./@arcanea-flow/shared/src"],
+      "@arcanea-flow/hooks": ["./@arcanea-flow/hooks/src"]
     }
   },
   "references": [
-    { "path": "./@claude-flow/shared" },
-    { "path": "./@claude-flow/security" },
-    { "path": "./@claude-flow/memory" },
-    { "path": "./@claude-flow/integration" },
-    { "path": "./@claude-flow/swarm" },
-    { "path": "./@claude-flow/performance" },
-    { "path": "./@claude-flow/cli" },
-    { "path": "./@claude-flow/neural" },
-    { "path": "./@claude-flow/testing" },
-    { "path": "./@claude-flow/deployment" },
-    { "path": "./@claude-flow/hooks" }
+    { "path": "./@arcanea-flow/shared" },
+    { "path": "./@arcanea-flow/security" },
+    { "path": "./@arcanea-flow/memory" },
+    { "path": "./@arcanea-flow/integration" },
+    { "path": "./@arcanea-flow/swarm" },
+    { "path": "./@arcanea-flow/performance" },
+    { "path": "./@arcanea-flow/cli" },
+    { "path": "./@arcanea-flow/neural" },
+    { "path": "./@arcanea-flow/testing" },
+    { "path": "./@arcanea-flow/deployment" },
+    { "path": "./@arcanea-flow/hooks" }
   ],
   "include": [],
   "exclude": ["node_modules", "dist"]

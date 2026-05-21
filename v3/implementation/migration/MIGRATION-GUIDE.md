@@ -16,7 +16,7 @@ This guide walks you through migrating from Claude-Flow v2.x to v3.0. The migrat
 
 ```bash
 # Update to v3
-npm install claude-flow@3.0.0
+npm install arcanea-flow@3.0.0
 
 # Install new optional dependencies
 npm install sql.js  # Windows support
@@ -25,7 +25,7 @@ npm install sql.js  # Windows support
 ### Step 2: Run Auto-Migration
 
 ```bash
-npx claude-flow migrate --to v3
+npx arcanea-flow migrate --to v3
 ```
 
 This command:
@@ -41,7 +41,7 @@ This command:
 npm run test:compatibility
 
 # Check migration status
-npx claude-flow status --check-migration
+npx arcanea-flow status --check-migration
 ```
 
 ## Manual Migration Steps
@@ -118,13 +118,13 @@ Single source in `config.json`:
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "commands": ["npx claude-flow hooks pre-tool --tool=$TOOL_NAME"]
+        "commands": ["npx arcanea-flow hooks pre-tool --tool=$TOOL_NAME"]
       }
     ],
     "PostToolUse": [
       {
         "matcher": "*",
-        "commands": ["npx claude-flow hooks post-tool --tool=$TOOL_NAME"]
+        "commands": ["npx arcanea-flow hooks post-tool --tool=$TOOL_NAME"]
       }
     ]
   }
@@ -175,7 +175,7 @@ const coordinator = new SwarmCoordinator();
 const agentId = await coordinator.spawnAgent({ type: 'coder' });
 
 // v3 enhanced (opt-in)
-import { AgenticFlowAdapter } from 'claude-flow/v3';
+import { AgenticFlowAdapter } from 'arcanea-flow/v3';
 const adapter = new AgenticFlowAdapter({ sona: 'research' });
 const agentId = await adapter.createAgent('coder', {
   learning: true,       // +55% quality
@@ -191,7 +191,7 @@ const memory = new MemoryManager();
 const results = await memory.search('query');
 
 // v3 enhanced (opt-in)
-import { HybridMemorySystem } from 'claude-flow/v3';
+import { HybridMemorySystem } from 'arcanea-flow/v3';
 const memory = new HybridMemorySystem();
 const results = await memory.search('query', {
   semantic: true,       // AgentDB vector search
@@ -293,7 +293,7 @@ rm -rf archive/
 ### GNN-Enhanced Search
 
 ```typescript
-import { AgenticFlowAdapter } from 'claude-flow/v3';
+import { AgenticFlowAdapter } from 'arcanea-flow/v3';
 
 const adapter = new AgenticFlowAdapter({ enableGNN: true });
 const results = await adapter.searchPatterns(query, {
@@ -311,7 +311,7 @@ If you need to rollback to v2:
 cp .claude/config.json.v2.backup .claude/config.json
 
 # Downgrade package
-npm install claude-flow@2.7.47
+npm install arcanea-flow@2.7.47
 
 # Restore v2 settings (if needed)
 git checkout HEAD~1 -- .claude/settings-*.json
@@ -352,9 +352,9 @@ Manual resolution needed:
 
 ## Support
 
-- Documentation: https://github.com/ruvnet/claude-flow/docs/v3
-- Issues: https://github.com/ruvnet/claude-flow/issues
-- Discussions: https://github.com/ruvnet/claude-flow/discussions
+- Documentation: https://github.com/ruvnet/arcanea-flow/docs/v3
+- Issues: https://github.com/ruvnet/arcanea-flow/issues
+- Discussions: https://github.com/ruvnet/arcanea-flow/discussions
 
 ---
 
