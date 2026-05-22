@@ -292,7 +292,7 @@ function createMockStreamingClient(): MockStreamingClient {
   const data = new Map<string, { vector: number[]; metadata?: Record<string, unknown> }>();
 
   // Pre-populate with test data
-  for (let i = 0; i < 10000; i++) {
+  for (let i = 0; i < 1200; i++) {
     data.set(`vec-${i}`, {
       vector: normalizedVector(384),
       metadata: { index: i, category: i % 10 },

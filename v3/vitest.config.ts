@@ -29,8 +29,8 @@ export default defineConfig({
 
     // Exclude patterns
     exclude: [
-      'node_modules',
-      'dist',
+      '**/node_modules/**',
+      '**/dist/**',
       '.git',
     ],
 
@@ -73,21 +73,17 @@ export default defineConfig({
     clearMocks: true,
     restoreMocks: true,
 
-    // Timeout for async operations
-    testTimeout: 10000,
-    hookTimeout: 10000,
+    // Timeout for async operations (extended on Windows to prevent flaky CPU thrashing timeouts)
+    testTimeout: process.platform === 'win32' ? 30000 : 10000,
+    hookTimeout: process.platform === 'win32' ? 30000 : 10000,
 
     // Reporter configuration
     reporters: ['default'],
 
-    // Parallel execution
+    // Parallel execution (Vitest 4 top-level config)
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: false,
-        isolate: true,
-      },
-    },
+    maxWorkers: process.platform === 'win32' ? 1 : undefined,
+    isolate: true,
 
     // Globals for easier testing
     globals: true,

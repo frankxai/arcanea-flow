@@ -5,6 +5,8 @@
  * Part of the hybrid memory system per ADR-009.
  */
 
+import * as fs from 'fs';
+import * as path from 'path';
 import type {
   Memory,
   MemoryBackend,
@@ -22,14 +24,44 @@ export class SQLiteBackend implements MemoryBackend {
     this.memories = new Map();
   }
 
+  private async loadFromFile(): Promise<void> {
+    if (!this.dbPath || this.dbPath === ':memory:') return;
+    try {
+      if (fs.existsSync(this.dbPath)) {
+        const data = await fs.promises.readFile(this.dbPath, 'utf-8');
+        if (data.trim()) {
+          const parsed = JSON.parse(data);
+          if (Array.isArray(parsed)) {
+            this.memories = new Map(parsed);
+          }
+        }
+      }
+    } catch (error) {
+      console.warn(`[SQLiteBackend] Failed to load from file ${this.dbPath}:`, error);
+    }
+  }
+
+  private async saveToFile(): Promise<void> {
+    if (!this.dbPath || this.dbPath === ':memory:') return;
+    try {
+      const dir = path.dirname(this.dbPath);
+      if (!fs.existsSync(dir)) {
+        await fs.promises.mkdir(dir, { recursive: true });
+      }
+      const data = JSON.stringify(Array.from(this.memories.entries()), null, 2);
+      await fs.promises.writeFile(this.dbPath, data, 'utf-8');
+    } catch (error) {
+      console.warn(`[SQLiteBackend] Failed to save to file ${this.dbPath}:`, error);
+    }
+  }
+
   /**
    * Initialize the SQLite database
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    // In a real implementation, this would create/open SQLite database
-    // For now, using in-memory storage for test compatibility
+    await this.loadFromFile();
     this.initialized = true;
   }
 
@@ -46,6 +78,7 @@ export class SQLiteBackend implements MemoryBackend {
    */
   async store(memory: Memory): Promise<Memory> {
     this.memories.set(memory.id, { ...memory });
+    await this.saveToFile();
     return memory;
   }
 
@@ -62,6 +95,7 @@ export class SQLiteBackend implements MemoryBackend {
   async update(memory: Memory): Promise<void> {
     if (this.memories.has(memory.id)) {
       this.memories.set(memory.id, { ...memory });
+      await this.saveToFile();
     }
   }
 
@@ -69,7 +103,9 @@ export class SQLiteBackend implements MemoryBackend {
    * Delete a memory
    */
   async delete(id: string): Promise<void> {
-    this.memories.delete(id);
+    if (this.memories.delete(id)) {
+      await this.saveToFile();
+    }
   }
 
   /**
@@ -132,10 +168,15 @@ export class SQLiteBackend implements MemoryBackend {
    * Clear all memories for an agent
    */
   async clearAgent(agentId: string): Promise<void> {
+    let changed = false;
     for (const [id, memory] of this.memories.entries()) {
       if (memory.agentId === agentId) {
         this.memories.delete(id);
+        changed = true;
       }
+    }
+    if (changed) {
+      await this.saveToFile();
     }
   }
 
