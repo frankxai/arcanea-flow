@@ -1120,9 +1120,22 @@ describe('QueenCoordinator', () => {
   // ===========================================================================
 
   describe('Performance Statistics', () => {
+    let perfSpy: any;
+
     beforeEach(async () => {
       queen = createQueenCoordinator(mockSwarm);
       await queen.initialize();
+      let time = 0;
+      perfSpy = vi.spyOn(performance, 'now').mockImplementation(() => {
+        time += 10;
+        return time;
+      });
+    });
+
+    afterEach(() => {
+      if (perfSpy) {
+        perfSpy.mockRestore();
+      }
     });
 
     it('should track analysis latencies', async () => {

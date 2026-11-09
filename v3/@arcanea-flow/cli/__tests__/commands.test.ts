@@ -9,6 +9,50 @@ import { swarmCommand } from '../src/commands/swarm.js';
 import { memoryCommand } from '../src/commands/memory.js';
 import { configCommand } from '../src/commands/config.js';
 import type { CommandContext } from '../src/types.js';
+// Mock memory-initializer
+vi.mock('../src/memory/memory-initializer.js', () => ({
+  storeEntry: vi.fn(async (input: any) => ({
+    success: true,
+    id: 'mock-entry-id',
+    embedding: { dimensions: 1536 }
+  })),
+  getEntry: vi.fn(async (input: any) => ({
+    success: true,
+    found: true,
+    entry: {
+      key: input.key,
+      namespace: input.namespace || 'default',
+      content: 'mock-value-for-' + input.key,
+      accessCount: 5,
+      tags: ['test'],
+      hasEmbedding: true,
+      updatedAt: new Date().toISOString()
+    }
+  })),
+  searchEntries: vi.fn(async (input: any) => ({
+    success: true,
+    searchTime: 0.5,
+    results: [
+      { key: 'result-1', content: 'auth pattern 1', score: 0.95, namespace: 'default' },
+      { key: 'result-2', content: 'auth pattern 2', score: 0.85, namespace: 'default' }
+    ]
+  })),
+  listEntries: vi.fn(async (input: any) => ({
+    success: true,
+    total: 2,
+    entries: [
+      { key: 'entry-1', namespace: 'default', size: 100, hasEmbedding: true, accessCount: 10, updatedAt: new Date().toISOString() },
+      { key: 'entry-2', namespace: 'default', size: 200, hasEmbedding: false, accessCount: 5, updatedAt: new Date().toISOString() }
+    ]
+  })),
+  deleteEntry: vi.fn(async (input: any) => ({
+    success: true,
+    deleted: true,
+    remainingEntries: 41
+  })),
+  getHNSWIndex: vi.fn(async () => ({})),
+  getHNSWStatus: vi.fn(() => ({ entryCount: 10, dimensions: 1536 }))
+}));
 
 // Mock MCP client
 vi.mock('../src/mcp-client.js', () => ({

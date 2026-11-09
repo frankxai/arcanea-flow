@@ -11,6 +11,24 @@ describe('TokenOptimizer', () => {
 
   beforeAll(async () => {
     optimizer = await getTokenOptimizer();
+    // Directly inject mock properties to test optimized integration paths
+    optimizer['agenticFlowAvailable'] = true;
+    optimizer['configTuning'] = {
+      getOptimalBatchSize: () => ({ size: 4, expectedSuccessRate: 0.95 }),
+      getOptimalCacheConfig: () => ({ sizeMB: 50 }),
+      selectTopology: (count: number) => ({ topology: count <= 3 ? 'mesh' : 'hierarchical' }),
+      cacheGet: () => null,
+      cacheSet: () => {},
+    };
+    optimizer['reasoningBank'] = {
+      retrieveMemories: async (query: string) => [
+        { content: `Mock memory for ${query}`, score: 0.9 }
+      ],
+      formatMemoriesForPrompt: (memories: any[]) => `Formatted memories: ${memories.map(m => m.content).join(', ')}`,
+    };
+    optimizer['agentBooster'] = {
+      editCode: async () => ({ method: 'agent-booster', speedupFactor: 352, executionTimeMs: 1 }),
+    };
   });
 
   describe('initialization', () => {

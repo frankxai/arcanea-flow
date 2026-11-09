@@ -142,13 +142,13 @@ describe('Path Security', () => {
 
   describe('safePath', () => {
     it('should create safe paths within base', () => {
-      const base = '/project';
+      const base = path.resolve('/project');
       const result = safePath(base, 'src', 'index.ts');
       expect(result).toBe(path.resolve(base, 'src', 'index.ts'));
     });
 
     it('should block path traversal attempts', () => {
-      const base = '/project';
+      const base = path.resolve('/project');
       expect(() => safePath(base, '..', 'etc', 'passwd')).toThrow('Path traversal blocked');
       expect(() => safePath(base, 'src', '..', '..', 'etc')).toThrow('Path traversal blocked');
     });
@@ -166,7 +166,8 @@ describe('JSON Security', () => {
       const malicious = '{"__proto__": {"polluted": true}, "normal": 1}';
       const result = safeJsonParse<Record<string, unknown>>(malicious);
       expect(result.normal).toBe(1);
-      expect(result.__proto__).toBeUndefined();
+      expect(Object.prototype.hasOwnProperty.call(result, '__proto__')).toBe(false);
+      expect((result as any).polluted).toBeUndefined();
     });
 
     it('should throw on invalid JSON', () => {

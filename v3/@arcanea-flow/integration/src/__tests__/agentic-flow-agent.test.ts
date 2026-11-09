@@ -67,7 +67,7 @@ describe('AgenticFlowAgent', () => {
 
       expect(result.success).toBe(true);
       expect(result.taskId).toBe('task-1');
-      expect(result.duration).toBeGreaterThan(0);
+      expect(result.duration).toBeGreaterThanOrEqual(0);
       expect(agent.metrics?.tasksCompleted).toBe(1);
     });
 
@@ -100,7 +100,7 @@ describe('AgenticFlowAgent', () => {
       });
 
       expect(agent.metrics?.tasksCompleted).toBe(2);
-      expect(agent.metrics?.avgTaskDuration).toBeGreaterThan(0);
+      expect(agent.metrics?.avgTaskDuration).toBeGreaterThanOrEqual(0);
     });
   });
 

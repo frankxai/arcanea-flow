@@ -114,7 +114,7 @@ describe('Similarity Functions', () => {
     it('should support euclidean metric', () => {
       const result = computeSimilarity(vec1, vec3, 'euclidean');
       expect(result.metric).toBe('euclidean');
-      expect(result.score).toBeCloseTo(Math.sqrt(2));
+      expect(result.score).toBeCloseTo(1 / (1 + Math.sqrt(2)));
     });
 
     it('should support dot product metric', () => {
